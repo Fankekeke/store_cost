@@ -50,16 +50,6 @@ export default {
     },
     userInfoData: {
       require: true
-    },
-    ssexs: {
-      type: Array,
-      required: true,
-      default: () => []
-    },
-    status: {
-      type: Array,
-      required: true,
-      default: () => []
     }
   },
   computed: {
@@ -71,14 +61,16 @@ export default {
       }
     },
     sex () {
-      for (let index in this.ssexs) {
-        if (this.userInfoData.ssex === this.ssexs[index].keyy) {
-          return this.ssexs[index].valuee
-        } else {
-          continue
-        }
+      switch (this.userInfoData.ssex) {
+        case '0':
+          return '男'
+        case '1':
+          return '女'
+        case '2':
+          return '保密'
+        default:
+          return this.userInfoData.ssex
       }
-      return this.userInfoData.ssex
     }
   },
   methods: {

@@ -13,28 +13,18 @@
                    v-bind="formItemLayout"
                    :validateStatus="validateStatus"
                    :help="help">
-        <a-input @blur="handleRoleNameBlur" v-decorator="['roleName']"/>
+        <a-input @blur="handleRoleNameBlur" v-model="role.roleName" v-decorator="['roleName']"/>
       </a-form-item>
       <a-form-item label='角色描述' v-bind="formItemLayout">
         <a-textarea
           :rows="4"
+          v-model="role.remark"
           v-decorator="[
           'remark',
           {rules: [
             { max: 50, message: '长度不能超过50个字符'}
           ]}]">
         </a-textarea>
-      </a-form-item>
-      <a-form-item label='数据权限' v-bind="formItemLayout">
-        <a-radio-group
-          name="dataScope"
-          :options="options"
-          v-decorator="[
-          'dataScope',
-          {rules: [
-            { required: true }
-          ]}]">
-        </a-radio-group>
       </a-form-item>
       <a-form-item label='权限选择'
                    style="margin-bottom: 2rem"
@@ -82,11 +72,6 @@ export default {
   props: {
     roleAddVisiable: {
       default: false
-    },
-    dataScope: {
-      type: Array,
-      required: true,
-      default: () => []
     }
   },
   data () {
@@ -102,19 +87,14 @@ export default {
       role: {
         roleName: '',
         remark: '',
-        menuId: '',
-        dataScope: ''
+        menuId: ''
       },
       checkedKeys: [],
       expandedKeys: [],
       menuTreeData: [],
       allTreeKeys: [],
-      checkStrictly: true,
-      options: []
+      checkStrictly: true
     }
-  },
-  mounted () {
-    this.daraScopeOptions()
   },
   methods: {
     reset () {
@@ -164,7 +144,6 @@ export default {
       } else {
         this.form.validateFields((err, values) => {
           if (!err) {
-            this.setRoleFields()
             this.loading = true
             this.role.menuId = checkedArr.join(',')
             this.$post('role', {
@@ -180,8 +159,7 @@ export default {
       }
     },
     handleRoleNameBlur () {
-      let roleName = this.form.getFieldValue('roleName')
-      roleName = typeof roleName === 'undefined' ? '' : roleName.trim()
+      let roleName = this.role.roleName.trim()
       if (roleName.length) {
         if (roleName.length > 10) {
           this.validateStatus = 'error'
@@ -202,22 +180,6 @@ export default {
         this.validateStatus = 'error'
         this.help = '角色名称不能为空'
       }
-    },
-    setRoleFields () {
-      let values = this.form.getFieldsValue(['roleName', 'remark', 'dataScope'])
-      if (typeof values !== 'undefined') {
-        Object.keys(values).forEach(_key => { this.role[_key] = values[_key] })
-      }
-    },
-    daraScopeOptions () {
-      let options = []
-      for (let ind in this.$props.dataScope) {
-        let option = {}
-        option.label = this.$props.dataScope[ind].valuee
-        option.value = Number(this.$props.dataScope[ind].keyy)
-        options.push(option)
-      }
-      this.options = options
     }
   },
   watch: {

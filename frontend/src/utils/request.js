@@ -7,7 +7,7 @@ moment.locale('zh-cn')
 
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: `http://${process.env.BACKEND_API_HOST}/`,
+  baseURL: 'http://127.0.0.1:9527/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -30,8 +30,6 @@ FEBS_REQUEST.interceptors.request.use((config) => {
         return new Promise((resolve, reject) => {
           db.clear()
           location.reload()
-        }).catch(function (reason) {
-          console.log('catch:', reason)
         })
       }
     })
@@ -81,44 +79,34 @@ FEBS_REQUEST.interceptors.response.use((config) => {
 
 const request = {
   post (url, params) {
-    let contentType = (url.indexOf('login') > -1) || (url.indexOf('regist') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('regist') > -1) {
-          Object.keys(params).forEach((key) => {
-            if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
-              result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
-            }
-          })
-        } else {
-          result = JSON.stringify(params)
-        }
+        Object.keys(params).forEach((key) => {
+          if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+            result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+          }
+        })
         return result
       }],
       headers: {
-        'Content-Type': contentType
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
   },
   put (url, params) {
-    let contentType = (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.put(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1) {
-          Object.keys(params).forEach((key) => {
-            if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
-              result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
-            }
-          })
-        } else {
-          result = JSON.stringify(params)
-        }
+        Object.keys(params).forEach((key) => {
+          if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+            result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+          }
+        })
         return result
       }],
       headers: {
-        'Content-Type': contentType
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
   },
@@ -154,17 +142,14 @@ const request = {
     message.loading('导出数据中')
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
-        // let result = ''
-        // Object.keys(params).forEach((key) => {
-        //   if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
-        //     result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
-        //   }
-        // })
-        return JSON.stringify(params)
+        let result = ''
+        Object.keys(params).forEach((key) => {
+          if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+            result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+          }
+        })
+        return result
       }],
-      headers: {
-        'Content-Type': 'application/json'
-      },
       responseType: 'blob'
     }).then((r) => {
       const content = r.data
@@ -226,20 +211,6 @@ const request = {
         'Content-Type': 'multipart/form-data'
       }
     })
-  },
-  originalGet (url, params) {
-    let _params
-    if (Object.is(params, undefined)) {
-      _params = ''
-    } else {
-      _params = '?'
-      for (let key in params) {
-        if (params.hasOwnProperty(key) && params[key] !== null) {
-          _params += `${key}=${params[key]}&`
-        }
-      }
-    }
-    return axios.get(`${url}${_params}`)
   }
 }
 

@@ -2,10 +2,10 @@
   <div style="width: 100%;margin-top: 1rem">
     <a-row :gutter="8">
       <a-col :span="12">
-        <div  id="lineChartMemory" style="height: 350px;" ></div>
+        <apexchart ref="memoryInfo" type=area height=350 :options="memory.chartOptions" :series="memory.series" />
       </a-col>
       <a-col :span="12">
-        <div  id="lineChartKey" style="height: 350px;" ></div>
+        <apexchart ref="keySize" type=area height=350  :options="key.chartOptions" :series="key.series" />
       </a-col>
     </a-row>
     <a-row :gutter="8">
@@ -29,14 +29,91 @@ export default {
   data () {
     return {
       loading: true,
+      memory: {
+        series: [],
+        chartOptions: {
+          chart: {
+            animations: {
+              enabled: true,
+              easing: 'linear',
+              dynamicAnimation: {
+                speed: 3000
+              }
+            },
+            toolbar: {
+              show: false
+            },
+            zoom: {
+              enabled: false
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth'
+          },
+          title: {
+            text: 'Redis内存实时占用情况（kb）',
+            align: 'left'
+          },
+          markers: {
+            size: 0
+          },
+          xaxis: {
+          },
+          yaxis: {},
+          legend: {
+            show: false
+          }
+        },
+        data: [],
+        xdata: []
+      },
+      key: {
+        series: [],
+        chartOptions: {
+          chart: {
+            animations: {
+              enabled: true,
+              easing: 'linear',
+              dynamicAnimation: {
+                speed: 3000
+              }
+            },
+            toolbar: {
+              show: false
+            },
+            zoom: {
+              enabled: false
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          colors: ['#f5564e'],
+          stroke: {
+            curve: 'smooth'
+          },
+          title: {
+            text: 'Redis key实时数量（个）',
+            align: 'left'
+          },
+          markers: {
+            size: 0
+          },
+          xaxis: {
+          },
+          yaxis: {},
+          legend: {
+            show: false
+          }
+        },
+        data: [],
+        xdata: []
+      },
       redisInfo: [],
-      timer: null,
-      categoriesOne: [],
-      dataOne: [],
-      chartOne: '',
-      categoriesTwo: [],
-      dataTwo: [],
-      chartTwo: ''
+      timer: null
     }
   },
   beforeDestroy () {
@@ -45,16 +122,11 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    let minMemory = 1e10
+    let minSize = 1e10
+    let maxMemory = -1e10
+    let maxSize = -1e10
     this.timer = setInterval(() => {
-      this.getData()
-    }, 3000)
-    this.$get('redis/info').then((r) => {
-      this.redisInfo = r.data.data
-    })
-  },
-  methods: {
-    getData () {
       if (this.$route.path.indexOf('redis') !== -1) {
         axios.all([
           this.$get('redis/keysSize'),
@@ -62,26 +134,65 @@ export default {
         ]).then((r) => {
           let currentMemory = r[1].data.used_memory / 1000
           let currentSize = r[0].data.dbSize
+          if (currentMemory < minMemory) {
+            minMemory = currentMemory
+          }
+          if (currentMemory > maxMemory) {
+            maxMemory = currentMemory
+          }
+          if (currentSize < minSize) {
+            minSize = currentSize
+          }
+          if (currentSize > maxSize) {
+            maxSize = currentSize
+          }
           let time = moment().format('hh:mm:ss')
-          this.dataOne.push(currentMemory)
-          this.categoriesOne.push(time)
-          this.dataTwo.push(currentSize)
-          this.categoriesTwo.push(time)
-          if (this.dataOne.length >= 6) {
-            this.categoriesOne.shift()
-            this.dataOne.shift()
+          this.memory.data.push(currentMemory)
+          this.memory.xdata.push(time)
+          this.key.data.push(currentSize)
+          this.key.xdata.push(time)
+          if (this.memory.data.length >= 6) {
+            this.memory.data.shift()
+            this.memory.xdata.shift()
           }
-          if (this.dataTwo.length >= 6) {
-            this.categoriesTwo.shift()
-            this.dataTwo.shift()
+          if (this.key.data.length >= 6) {
+            this.key.data.shift()
+            this.key.xdata.shift()
           }
-          this.lineChartOne('lineChartMemory')
-          this.lineChartTwo('lineChartKey')
+          this.$refs.memoryInfo.updateSeries([
+            {
+              name: '内存(kb)',
+              data: this.memory.data.slice()
+            }
+          ])
+          this.$refs.memoryInfo.updateOptions({
+            xaxis: {
+              categories: this.memory.xdata.slice()
+            },
+            yaxis: {
+              min: minMemory,
+              max: maxMemory
+            }
+          }, true, true)
+          this.$refs.keySize.updateSeries([
+            {
+              name: 'key数量',
+              data: this.key.data.slice()
+            }
+          ])
+          this.$refs.keySize.updateOptions({
+            xaxis: {
+              categories: this.key.xdata.slice()
+            },
+            yaxis: {
+              min: minSize - 2,
+              max: maxSize + 2
+            }
+          }, true, true)
           if (this.loading) {
             this.loading = false
           }
         }).catch((r) => {
-          this.loading = false
           console.error(r)
           this.$message.error('获取Redis信息失败')
           if (this.timer) {
@@ -89,89 +200,10 @@ export default {
           }
         })
       }
-    },
-    lineChartOne (chartId) {
-      this.chartOne = this.$echarts.init(document.getElementById(chartId))
-      this.chartOne.setOption({
-        color: ['#1890ff', '#fcc550', '#1890ff', '#ff9933', '#fa541c', '#42b983', '#722ed1', '#60FFF0', '#52c41a', '#42b983'],
-        title: {
-          text: 'Redis内存实时占用情况（kb）',
-          show: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'line'
-          }
-        },
-        legend: false,
-        xAxis: {
-          type: 'category',
-          boundaryGap: true,
-          data: this.categoriesOne,
-          axisLabel: {
-            textStyle: {
-              fontSize: '12'
-            }
-          }
-        },
-        yAxis: {
-          type: 'value',
-          axisLabel: {
-            textStyle: {
-              fontSize: '12'
-            }
-          }
-        },
-        series: [{
-          name: '内存(kb)',
-          data: this.dataOne,
-          type: 'line',
-          areaStyle: {}
-        }]
-      }, true)
-    },
-    lineChartTwo (chartId) {
-      this.chartTwo = this.$echarts.init(document.getElementById(chartId))
-      this.chartTwo.setOption({
-        color: ['#f5564e', '#fcc550', '#1890ff', '#ff9933', '#fa541c', '#42b983', '#722ed1', '#60FFF0', '#52c41a', '#42b983'],
-        title: {
-          text: 'Redis key实时数量（个）',
-          show: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'line'
-          }
-        },
-        legend: false,
-        xAxis: {
-          type: 'category',
-          boundaryGap: true,
-          data: this.categoriesTwo,
-          axisLabel: {
-            textStyle: {
-              fontSize: '12'
-            }
-          }
-        },
-        yAxis: {
-          type: 'value',
-          axisLabel: {
-            textStyle: {
-              fontSize: '12'
-            }
-          }
-        },
-        series: [{
-          name: 'key数量',
-          data: this.dataTwo,
-          type: 'line',
-          areaStyle: {}
-        }]
-      }, true)
-    }
+    }, 3000)
+    this.$get('redis/info').then((r) => {
+      this.redisInfo = r.data.data
+    })
   }
 }
 </script>

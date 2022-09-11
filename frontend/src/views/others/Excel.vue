@@ -29,7 +29,6 @@
     <a-card :bordered="false" class="card-area">
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
-               :rowKey="record =>record.id"
                :columns="columns"
                :dataSource="dataSource"
                :pagination="pagination"
@@ -127,12 +126,8 @@ export default {
         if (data.data.length) {
           this.fetch()
         }
-        if (typeof data.data !== 'undefined') {
-          this.importData = data.data
-        }
-        if (typeof data.error !== 'undefined') {
-          this.errors = data.error
-        }
+        this.importData = data.data
+        this.errors = data.error
         this.times = data.time / 1000
         this.uploading = false
         this.fileList = []

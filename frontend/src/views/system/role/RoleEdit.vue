@@ -22,17 +22,6 @@
           ]}]">
         </a-textarea>
       </a-form-item>
-      <a-form-item label='数据权限' v-bind="formItemLayout">
-        <a-radio-group
-          name="dataScope"
-          :options="options"
-          v-decorator="[
-          'dataScope',
-          {rules: [
-            { required: true }
-          ]}]">
-        </a-radio-group>
-      </a-form-item>
       <a-form-item label='权限选择'
                    style="margin-bottom: 2rem"
                    :validateStatus="menuSelectStatus"
@@ -83,11 +72,6 @@ export default {
     },
     roleInfoData: {
       require: true
-    },
-    dataScope: {
-      type: Array,
-      required: true,
-      default: () => []
     }
   },
   data () {
@@ -106,12 +90,8 @@ export default {
       checkedKeys: [],
       defaultCheckedKeys: [],
       expandedKeys: [],
-      checkStrictly: true,
-      options: []
+      checkStrictly: true
     }
-  },
-  mounted () {
-    this.daraScopeOptions()
   },
   methods: {
     reset () {
@@ -154,7 +134,7 @@ export default {
       this.expandedKeys = expandedKeys
     },
     setFormValues ({...role}) {
-      let fields = ['roleName', 'remark', 'dataScope']
+      let fields = ['roleName', 'remark']
       Object.keys(role).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -187,16 +167,6 @@ export default {
           }
         })
       }
-    },
-    daraScopeOptions () {
-      let options = []
-      for (let ind in this.$props.dataScope) {
-        let option = {}
-        option.label = this.$props.dataScope[ind].valuee
-        option.value = Number(this.$props.dataScope[ind].keyy)
-        options.push(option)
-      }
-      this.options = options
     }
   },
   watch: {

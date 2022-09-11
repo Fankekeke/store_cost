@@ -1,8 +1,10 @@
 <template>
   <div class="user-layout-register">
-    <a-form ref="formRegister" :form="form" id="formRegister">
-      <a-form-item>
-        <a-input size="large" type="text" placeholder="账号" v-decorator="['username',{rules: [{ required: true, message: '请输入注册账号' }, { validator: this.handleUsernameCheck }], validateTrigger: ['change', 'blur']}]"></a-input>
+    <a-form ref="formRegister" :autoFormCreate="(form)=>{this.form = form}" id="formRegister">
+      <a-form-item
+        fieldDecoratorId="email"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入注册账号' },  { validator: this.handleUsernameCheck }], validateTrigger: ['change', 'blur']}">
+        <a-input size="large" type="text" v-model="username" placeholder="账号"></a-input>
       </a-form-item>
       <a-popover placement="rightTop" trigger="click" :visible="state.passwordLevelChecked">
         <template slot="content">
@@ -14,15 +16,19 @@
             </div>
           </div>
         </template>
-        <a-form-item>
-          <a-input size="large" type="password" @click="handlePasswordInputClick" autocomplete="false"
-                   placeholder="至少6位密码" v-decorator="['password',{rules: [{ required: true, message: '至少6位密码'}, { validator: this.handlePasswordLevel }], validateTrigger: ['change', 'blur']}]"></a-input>
+        <a-form-item
+          fieldDecoratorId="password"
+          :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码'}, { validator: this.handlePasswordLevel }], validateTrigger: ['change', 'blur']}">
+          <a-input size="large" v-model="password" type="password" @click="handlePasswordInputClick" autocomplete="false"
+                   placeholder="至少6位密码"></a-input>
         </a-form-item>
       </a-popover>
 
-      <a-form-item>
+      <a-form-item
+        fieldDecoratorId="password2"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '至少6位密码' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}">
 
-        <a-input size="large" type="password" autocomplete="false" placeholder="确认密码" v-decorator="['password2',{rules: [{ required: true, message: '至少6位密码' }, { validator: this.handlePasswordCheck }], validateTrigger: ['change', 'blur']}]"></a-input>
+        <a-input size="large" type="password" autocomplete="false" placeholder="确认密码"></a-input>
       </a-form-item>
       <!--
       <a-form-item
@@ -100,13 +106,11 @@ const levelColor = {
   3: '#52c41a'
 }
 export default {
-  beforeCreate () {
-    this.form = this.$form.createForm(this)
-  },
   name: 'Regist',
   components: {},
   data () {
     return {
+      form: null,
       username: '',
       password: '',
       state: {
@@ -177,8 +181,7 @@ export default {
     },
 
     handleUsernameCheck (rule, value, callback) {
-      let username = this.form.getFieldValue('username')
-      username = typeof username === 'undefined' ? '' : username.trim()
+      let username = this.username.trim()
       if (username.length) {
         if (username.length > 10) {
           callback(new Error('用户名不能超过10个字符'))
@@ -214,10 +217,9 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          let password = this.form.getFieldValue('password')
           this.$post('regist', {
-            username: this.form.getFieldValue('username'),
-            password: this.$aesEncrypt.encrypt(password)
+            username: this.username,
+            password: this.password
           }).then(() => {
             this.$message.success('注册成功')
             this.returnLogin()

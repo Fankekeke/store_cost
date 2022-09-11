@@ -62,7 +62,6 @@
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
                :columns="columns"
-               :rowKey="record => record.userId"
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
@@ -89,16 +88,12 @@
     <user-info
       :userInfoData="userInfo.data"
       :userInfoVisiable="userInfo.visiable"
-      :ssexs="this.ssexs"
-      :status="this.status"
       @close="handleUserInfoClose">
     </user-info>
     <!-- 新增用户 -->
     <user-add
       @close="handleUserAddClose"
       @success="handleUserAddSuccess"
-      :ssexs="this.ssexs"
-      :status="this.status"
       :userAddVisiable="userAdd.visiable">
     </user-add>
     <!-- 修改用户 -->
@@ -106,8 +101,6 @@
       ref="userEdit"
       @close="handleUserEditClose"
       @success="handleUserEditSuccess"
-      :ssexs="this.ssexs"
-      :status="this.status"
       :userEditVisiable="userEdit.visiable">
     </user-edit>
   </a-card>
@@ -119,7 +112,6 @@ import DeptInputTree from '../dept/DeptInputTree'
 import RangeDate from '@/components/datetime/RangeDate'
 import UserAdd from './UserAdd'
 import UserEdit from './UserEdit'
-import {mapState} from 'vuex'
 
 export default {
   name: 'User',
@@ -155,25 +147,10 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      currentUser: state => state.account.user,
-      ssexs: state => state.dict.dicts.t_user_ssex,
-      status: state => state.dict.dicts.t_user_status
-    }),
     columns () {
       let { sortedInfo, filteredInfo } = this
       sortedInfo = sortedInfo || {}
       filteredInfo = filteredInfo || {}
-      let sexFilters = []
-      let stateFilters = []
-      for (let index in this.ssexs) {
-        let obj = {text: this.ssexs[index].valuee, value: this.ssexs[index].keyy}
-        sexFilters.push(obj)
-      }
-      for (let index in this.status) {
-        let obj = {text: this.status[index].valuee, value: this.status[index].keyy}
-        stateFilters.push(obj)
-      }
       return [{
         title: '用户名',
         dataIndex: 'username',
@@ -183,29 +160,33 @@ export default {
         title: '性别',
         dataIndex: 'ssex',
         customRender: (text, row, index) => {
-          for (let index in this.ssexs) {
-            if (text === this.ssexs[index].keyy) {
-              return this.ssexs[index].valuee
-            } else {
-              continue
-            }
+          switch (text) {
+            case '0':
+              return '男'
+            case '1':
+              return '女'
+            case '2':
+              return '保密'
+            default:
+              return text
           }
-          return text
         },
-        filters: sexFilters,
+        filters: [
+          { text: '男', value: '0' },
+          { text: '女', value: '1' },
+          { text: '保密', value: '2' }
+        ],
         filterMultiple: false,
         filteredValue: filteredInfo.ssex || null,
-        onFilter: (value, record) => record.ssex.includes(value),
-        width: 75
+        onFilter: (value, record) => record.ssex.includes(value)
       }, {
         title: '邮箱',
         dataIndex: 'email',
         scopedSlots: { customRender: 'email' },
-        width: 150
+        width: 100
       }, {
         title: '部门',
-        dataIndex: 'deptName',
-        width: 80
+        dataIndex: 'deptName'
       }, {
         title: '电话',
         dataIndex: 'mobile'
@@ -213,36 +194,33 @@ export default {
         title: '状态',
         dataIndex: 'status',
         customRender: (text, row, index) => {
-          for (let _index in this.status) {
-            let key = this.status[_index].keyy
-            if (text === key) {
-              let val = this.status[_index].valuee
-              let color = this.status[_index].otherKeyy
-              return <a-tag color={color}>{val}</a-tag>
-            } else {
-              continue
-            }
+          switch (text) {
+            case '0':
+              return <a-tag color="red">锁定</a-tag>
+            case '1':
+              return <a-tag color="cyan">有效</a-tag>
+            default:
+              return text
           }
-          return text
         },
-        filters: stateFilters,
+        filters: [
+          { text: '有效', value: '1' },
+          { text: '锁定', value: '0' }
+        ],
         filterMultiple: false,
         filteredValue: filteredInfo.status || null,
-        onFilter: (value, record) => record.status.includes(value),
-        width: 75
+        onFilter: (value, record) => record.status.includes(value)
       }, {
         title: '创建时间',
         dataIndex: 'createTime',
         sorter: true,
-        sortOrder: sortedInfo.columnKey === 'createTime' && sortedInfo.order,
-        width: 160
+        sortOrder: sortedInfo.columnKey === 'createTime' && sortedInfo.order
       }, {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' }
       }]
-    },
-    userProfileUpdate: state => state.$store.state.account.user
+    }
   },
   mounted () {
     this.fetch()
@@ -260,10 +238,6 @@ export default {
     },
     view (record) {
       this.userInfo.data = record
-      // 当前用户的头像优先取缓存里的
-      if (this.userInfo.data.username === this.currentUser.username && this.userInfo.data.avatar !== this.currentUser.avatar) {
-        this.userInfo.data.avatar = this.currentUser.avatar
-      }
       this.userInfo.visiable = true
     },
     add () {
@@ -312,10 +286,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let userIds = that.selectedRowKeys.join(',')
-          // let selectedRowKeysStr = ',' + that.selectedRowKeys.join(',') + ','
-          // userIds.push(that.dataSource.filter(f => { return selectedRowKeysStr.indexOf(',' + f.userId + ',') > -1 }).map(m => { return m.userId }))
-          that.$delete('user/' + userIds).then(() => {
+          let userIds = []
+          for (let key of that.selectedRowKeys) {
+            userIds.push(that.dataSource[key].userId)
+          }
+          that.$delete('user/' + userIds.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -338,8 +313,9 @@ export default {
         centered: true,
         onOk () {
           let usernames = []
-          let selectedRowKeysStr = ',' + that.selectedRowKeys.join(',') + ','
-          usernames.push(that.dataSource.filter(f => { return selectedRowKeysStr.indexOf(',' + f.userId + ',') > -1 }).map(m => { return m.username }))
+          for (let key of that.selectedRowKeys) {
+            usernames.push(that.dataSource[key].username)
+          }
           that.$put('user/password/reset', {
             usernames: usernames.join(',')
           }).then(() => {
@@ -375,7 +351,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.selectData({
+      this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams,
@@ -444,37 +420,6 @@ export default {
         // 数据加载完毕，关闭loading
         this.loading = false
       })
-    },
-    selectData (params = {}) {
-      this.loading = true
-      // 如果分页信息为空，则设置为默认值
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize
-      params.pageSize = this.pagination.defaultPageSize
-      params.pageNum = this.pagination.defaultCurrent
-      this.$get('user', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
-    }
-  },
-  watch: {
-    userProfileUpdate: {
-      handler (newValue, oldValue) {
-        let permission = this.$store.state.account.permissions.filter(permission => permission === 'user:view')
-        if (typeof permission !== 'undefined' && permission !== null) {
-          if (newValue.email !== oldValue.email || newValue.mobile !== oldValue.mobile || newValue.description !== oldValue.description || newValue.ssex !== oldValue.ssex || newValue.deptId !== oldValue.deptId) {
-            this.fetch()
-          }
-        }
-      },
-      deep: true
     }
   }
 }

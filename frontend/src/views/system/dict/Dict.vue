@@ -66,7 +66,6 @@
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
                :columns="columns"
-               :rowKey="record => record.dictId"
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
@@ -145,9 +144,6 @@ export default {
         title: '字段',
         dataIndex: 'fieldName'
       }, {
-        title: '其他依据',
-        dataIndex: 'otherKeyy'
-      }, {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -203,8 +199,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let dictIds = that.selectedRowKeys.join(',')
-          that.$delete('dict/' + dictIds).then(() => {
+          let dictIds = []
+          for (let key of that.selectedRowKeys) {
+            dictIds.push(that.dataSource[key].dictId)
+          }
+          that.$delete('dict/' + dictIds.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -221,7 +220,7 @@ export default {
       })
     },
     search () {
-      this.selectData({
+      this.fetch({
         ...this.queryParams
       })
     },
@@ -258,24 +257,6 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('dict', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
-    },
-    selectData (params = {}) {
-      this.loading = true
-      // 如果分页信息为空，则设置为默认值
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize
-      params.pageSize = this.pagination.defaultPageSize
-      params.pageNum = this.pagination.defaultCurrent
       this.$get('dict', {
         ...params
       }).then((r) => {

@@ -1,18 +1,22 @@
 <template>
   <div class="login">
-    <a-form @submit.prevent="doLogin" :form="form">
+    <a-form @submit.prevent="doLogin" :autoFormCreate="(form) => this.form = form">
       <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;" :activeKey="activeKey"
               @change="handleTabsChange">
         <a-tab-pane tab="账户密码登录" key="1">
           <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon
                    style="margin-bottom: 24px;"></a-alert>
-          <a-form-item>
-            <a-input size="large"  v-decorator="['name',{rules: [{ required: true, message: '请输入账户名', whitespace: true}]}]">
+          <a-form-item
+            fieldDecoratorId="name"
+            :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户名', whitespace: true}]}">
+            <a-input size="large">
               <a-icon slot="prefix" type="user"></a-icon>
             </a-input>
           </a-form-item>
-          <a-form-item>
-            <a-input size="large" type="password" v-decorator="['password',{rules: [{ required: true, message: '请输入密码', whitespace: true}]}]">
+          <a-form-item
+            fieldDecoratorId="password"
+            :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入密码', whitespace: true}]}">
+            <a-input size="large" type="password">
               <a-icon slot="prefix" type="lock"></a-icon>
             </a-input>
           </a-form-item>
@@ -53,16 +57,12 @@
 import {mapMutations} from 'vuex'
 
 export default {
-  beforeCreate () {
-    this.form = this.$form.createForm(this)
-  },
   name: 'Login',
   data () {
     return {
       loading: false,
       error: '',
-      activeKey: '1',
-      dicts: []
+      activeKey: '1'
     }
   },
   computed: {
@@ -88,14 +88,13 @@ export default {
             let password = this.form.getFieldValue('password')
             this.$post('login', {
               username: name,
-              password: this.$aesEncrypt.encrypt(password)
+              password: password
             }).then((r) => {
               let data = r.data.data
               this.saveLoginData(data)
               setTimeout(() => {
                 this.loading = false
               }, 500)
-              this.getDicts()
               this.$router.push('/')
             }).catch((e) => {
               console.error(e)
@@ -131,8 +130,7 @@ export default {
       setMultipage: 'setting/setMultipage',
       fixSiderbar: 'setting/fixSiderbar',
       fixHeader: 'setting/fixHeader',
-      setColor: 'setting/setColor',
-      setDicts: 'dict/setDicts'
+      setColor: 'setting/setColor'
     }),
     saveLoginData (data) {
       this.setToken(data.token)
@@ -146,17 +144,6 @@ export default {
       this.fixSiderbar(data.config.fixSiderbar === '1')
       this.fixHeader(data.config.fixHeader === '1')
       this.setColor(data.config.color)
-    },
-    getDicts () {
-      this.$get('dict/trim').then((r) => {
-        let data = r.data
-        this.saveDictData(data)
-      }).catch((e) => {
-        console.error(e)
-      })
-    },
-    saveDictData (data) {
-      this.setDicts(data)
     }
   }
 }

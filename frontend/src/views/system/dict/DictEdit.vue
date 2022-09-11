@@ -31,15 +31,9 @@
                   ]}]"/>
       </a-form-item>
       <a-form-item label='字段' v-bind="formItemLayout">
-      <a-input v-decorator="['fieldName',
+        <a-input v-decorator="['fieldName',
                    {rules: [
                     { required: true, message: '不能为空'},
-                    { max: 20, message: '长度不能超过20个字符'}
-                  ]}]"/>
-      </a-form-item>
-      <a-form-item label='其他' v-bind="formItemLayout">
-        <a-input v-decorator="['otherKeyy',
-                   {rules: [
                     { max: 20, message: '长度不能超过20个字符'}
                   ]}]"/>
       </a-form-item>
@@ -82,7 +76,7 @@ export default {
       this.$emit('close')
     },
     setFormValues ({...dict}) {
-      let fields = ['keyy', 'valuee', 'tableName', 'fieldName', 'otherKeyy']
+      let fields = ['keyy', 'valuee', 'tableName', 'fieldName']
       Object.keys(dict).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)

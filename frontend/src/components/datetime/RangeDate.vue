@@ -2,9 +2,6 @@
   <a-range-picker
     :key="id"
     ref="rangeDate"
-    format="YYYY-MM-DD HH:mm:ss"
-    :showTime="{ hideDisabledOptions:true }"
-    showToday
     @change="onChange" style="width: 100%"></a-range-picker>
 </template>
 

@@ -1,9 +1,7 @@
 'use strict'
 require('./check-versions')()
 
-if(!process.env.NODE_ENV){
-  process.env.NODE_ENV = 'production'
-}
+process.env.NODE_ENV = 'production'
 
 const ora = require('ora')
 const rm = require('rimraf')

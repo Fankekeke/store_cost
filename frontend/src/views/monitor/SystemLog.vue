@@ -63,7 +63,6 @@
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
                :columns="columns"
-               :rowKey="record => record.id"
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
@@ -196,8 +195,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let ids = that.selectedRowKeys.join(',')
-          that.$delete('log/' + ids).then(() => {
+          let ids = []
+          for (let key of that.selectedRowKeys) {
+            ids.push(that.dataSource[key].id)
+          }
+          that.$delete('log/' + ids.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -230,7 +232,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.selectData({
+      this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
@@ -279,24 +281,6 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('log', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
-    },
-    selectData (params = {}) {
-      this.loading = true
-      // 如果分页信息为空，则设置为默认值
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize
-      params.pageSize = this.pagination.defaultPageSize
-      params.pageNum = this.pagination.defaultCurrent
       this.$get('log', {
         ...params
       }).then((r) => {

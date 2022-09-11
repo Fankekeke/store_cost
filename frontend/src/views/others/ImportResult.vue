@@ -43,23 +43,21 @@
         </a-alert>
       </span>
     </div>
-    <a-tabs defaultActiveKey="1" :activeKey="activeKey" @tabClick="handelTabClick">
+    <a-tabs defaultActiveKey="1">
       <a-tab-pane tab="成功记录" key="1" v-if="importData.length">
         <a-table ref="successTable"
-                 :rowKey="(key,index) => index"
                  :columns="successColumns"
                  :dataSource="importData"
                  :pagination="pagination"
-                 :scroll="scroll">
+                 :scroll="{ x: 900 }">
         </a-table>
       </a-tab-pane>
       <a-tab-pane tab="失败记录" key="2" v-if="errors.length">
         <a-table ref="errorTable"
-                 :rowKey="(key,index) => index"
                  :columns="errorColumns"
                  :dataSource="errorsData"
                  :pagination="pagination"
-                 :scroll="scroll">
+                 :scroll="{ x: 900 }">
         </a-table>
       </a-tab-pane>
     </a-tabs>
@@ -91,11 +89,7 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
-      },
-      scroll: {
-        x: 900
-      },
-      activeKey: '1'
+      }
     }
   },
   computed: {
@@ -159,22 +153,6 @@ export default {
   methods: {
     handleCancel () {
       this.$emit('close')
-    },
-    handelTabClick (i) {
-      this.activeKey = i
-    }
-  },
-  watch: {
-    importData: {
-      handler (newVal, oldVal) {
-        if (newVal.length) {
-          this.activeKey = '1'
-        } else if (this.errors.length) {
-          this.activeKey = '2'
-        } else {
-          this.activeKey = '1'
-        }
-      }
     }
   }
 }

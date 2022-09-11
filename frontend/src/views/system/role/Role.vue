@@ -45,7 +45,6 @@
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
                :columns="columns"
-               :rowKey="record => record.roleId"
                :dataSource="dataSource"
                :pagination="pagination"
                :loading="loading"
@@ -70,14 +69,12 @@
       <role-info
         @close="handleRoleInfoClose"
         :roleInfoVisiable="roleInfo.visiable"
-        :dataScope="this.dataScope"
         :roleInfoData="roleInfo.data">
       </role-info>
       <!-- 新增角色 -->
       <role-add
         @close="handleRoleAddClose"
         @success="handleRoleAddSuccess"
-        :dataScope="this.dataScope"
         :roleAddVisiable="roleAdd.visiable">
       </role-add>
       <!-- 修改角色 -->
@@ -86,7 +83,6 @@
         :roleInfoData="roleInfo.data"
         @close="handleRoleEditClose"
         @success="handleRoleEditSuccess"
-        :dataScope="this.dataScope"
         :roleEditVisiable="roleEdit.visiable">
       </role-edit>
     </div>
@@ -98,7 +94,7 @@ import RangeDate from '@/components/datetime/RangeDate'
 import RoleAdd from './RoleAdd'
 import RoleInfo from './RoleInfo'
 import RoleEdit from './RoleEdit'
-import {mapState} from 'vuex'
+
 export default {
   name: 'Role',
   components: {RangeDate, RoleInfo, RoleAdd, RoleEdit},
@@ -120,7 +116,6 @@ export default {
         createTimeTo: ''
       },
       dataSource: [],
-      filteredInfo: null,
       sortedInfo: null,
       paginationInfo: null,
       selectedRowKeys: [],
@@ -136,18 +131,9 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      dataScope: state => state.dict.dicts.t_role_data_scope
-    }),
     columns () {
-      let { sortedInfo, filteredInfo } = this
+      let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
-      filteredInfo = filteredInfo || {}
-      let dataFilters = []
-      for (let index in this.dataScope) {
-        let obj = {text: this.dataScope[index].valuee, value: this.dataScope[index].keyy}
-        dataFilters.push(obj)
-      }
       return [{
         title: '角色',
         dataIndex: 'roleName'
@@ -166,24 +152,6 @@ export default {
         dataIndex: 'modifyTime',
         sorter: true,
         sortOrder: sortedInfo.columnKey === 'modifyTime' && sortedInfo.order
-      }, {
-        title: '数据范围',
-        dataIndex: 'dataScope',
-        customRender: (text, row, index) => {
-          for (let _index in this.dataScope) {
-            let key = Number(this.dataScope[_index].keyy)
-            if (text === key) {
-              return this.dataScope[_index].valuee
-            } else {
-              continue
-            }
-          }
-          return text
-        },
-        filters: dataFilters,
-        filterMultiple: false,
-        filteredValue: filteredInfo.dataScope || null,
-        onFilter: (value, record) => parseInt(value) === record.dataScope
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -246,10 +214,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let roleIds = that.selectedRowKeys.join(',')
-          // let selectedRowKeysStr = ',' + that.selectedRowKeys.join(',') + ','
-          // roleIds.push(that.dataSource.filter(f => { return selectedRowKeysStr.indexOf(',' + f.roleId + ',') > -1 }).map(m => { return m.roleId }))
-          that.$delete('role/' + roleIds).then(() => {
+          let roleIds = []
+          for (let key of that.selectedRowKeys) {
+            roleIds.push(that.dataSource[key].roleId)
+          }
+          that.$delete('role/' + roleIds.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -261,7 +230,7 @@ export default {
       })
     },
     exprotExccel () {
-      let {sortedInfo, filteredInfo} = this
+      let {sortedInfo} = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
@@ -271,23 +240,21 @@ export default {
       this.$export('role/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
-        ...this.queryParams,
-        ...filteredInfo
+        ...this.queryParams
       })
     },
     search () {
-      let {sortedInfo, filteredInfo} = this
+      let {sortedInfo} = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.selectData({
+      this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
-        ...this.queryParams,
-        ...filteredInfo
+        ...this.queryParams
       })
     },
     reset () {
@@ -299,8 +266,6 @@ export default {
         this.paginationInfo.current = this.pagination.defaultCurrent
         this.paginationInfo.pageSize = this.pagination.defaultPageSize
       }
-      // 重置列过滤器规则
-      this.filteredInfo = null
       // 重置列排序规则
       this.sortedInfo = null
       // 重置查询参数
@@ -312,13 +277,11 @@ export default {
     handleTableChange (pagination, filters, sorter) {
       // 将这两个参数赋值给Vue data，用于后续使用
       this.paginationInfo = pagination
-      this.filteredInfo = filters
       this.sortedInfo = sorter
       this.fetch({
         sortField: sorter.field,
         sortOrder: sorter.order,
-        ...this.queryParams,
-        ...filters
+        ...this.queryParams
       })
     },
     fetch (params = {}) {
@@ -343,24 +306,6 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
         this.loading = false
-      })
-    },
-    selectData (params = {}) {
-      this.loading = true
-      // 如果分页信息为空，则设置为默认值
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize
-      params.pageSize = this.pagination.defaultPageSize
-      params.pageNum = this.pagination.defaultCurrent
-      this.$get('role', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
       })
     }
   }
