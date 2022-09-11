@@ -153,19 +153,4 @@ public class CacheServiceImpl implements CacheService {
     public void deleteUserConfigs(String userId) throws Exception {
         redisService.del(FebsConstant.USER_CONFIG_CACHE_PREFIX + userId);
     }
-
-    @Override
-    public String getUserSubordinates(Long deptId) throws Exception {
-        return redisService.get(FebsConstant.USER_PERMISSION_DEPT_DATA_CACHE_PREFIX+FebsConstant.UNDER_LINE+deptId);
-    }
-
-    @Override
-    public String saveUserSubordinates(Long deptId, String permissions) throws Exception {
-        return redisService.set(FebsConstant.USER_PERMISSION_DEPT_DATA_CACHE_PREFIX+FebsConstant.UNDER_LINE+deptId,permissions);
-    }
-
-    @Override
-    public void deleteUserSubordinates(Long deptId) throws Exception {
-        redisService.del(FebsConstant.USER_PERMISSION_DEPT_DATA_CACHE_PREFIX + FebsConstant.UNDER_LINE + deptId);
-    }
 }

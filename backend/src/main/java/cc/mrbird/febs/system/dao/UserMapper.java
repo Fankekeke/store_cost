@@ -1,13 +1,10 @@
 package cc.mrbird.febs.system.dao;
 
-import cc.mrbird.febs.system.domain.DeptUsers;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 public interface UserMapper extends BaseMapper<User> {
 
@@ -20,7 +17,4 @@ public interface UserMapper extends BaseMapper<User> {
      * @return 用户信息
      */
     User findDetail(String username);
-    String findSubordinates(@Param("deptId")Long deptId);
-
-    List<DeptUsers> findSubordinatesMap();
 }

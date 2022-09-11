@@ -1,9 +1,9 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.SysLog;
 import cc.mrbird.febs.system.service.LogService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -19,9 +19,6 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author wx
- */
 @Slf4j
 @Validated
 @RestController
@@ -57,9 +54,6 @@ public class LogController extends BaseController {
     @RequiresPermissions("log:export")
     public void export(QueryRequest request, SysLog sysLog, HttpServletResponse response) throws FebsException {
         try {
-            if(request.getPageSize()> exportMaxCount) {
-                request.setPageSize(exportMaxCount);
-            }
             List<SysLog> sysLogs = this.logService.findLogs(request, sysLog).getRecords();
             ExcelKit.$Export(SysLog.class, response).downXlsx(sysLogs, false);
         } catch (Exception e) {

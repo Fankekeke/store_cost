@@ -1,9 +1,6 @@
 package cc.mrbird.febs.system.domain;
 
-import cc.mrbird.febs.common.converter.DataScopeReadConverter;
-import cc.mrbird.febs.common.converter.DataScopeWriteConverter;
 import cc.mrbird.febs.common.converter.TimeConverter;
-import cc.mrbird.febs.common.options.DataScopeOptions;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -12,7 +9,6 @@ import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
@@ -45,7 +41,5 @@ public class Role implements Serializable {
     private transient String createTimeFrom;
     private transient String createTimeTo;
     private transient String menuId;
-    @NotNull(message = "{required}")
-    @ExcelField(value = "数据范围", writeConverter = DataScopeWriteConverter.class,readConverter = DataScopeReadConverter.class,options = DataScopeOptions.class )
-    private Integer dataScope;
+
 }

@@ -1,10 +1,9 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
-import cc.mrbird.febs.common.domain.FebsResponse;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.RoleMenu;
 import cc.mrbird.febs.system.service.RoleMenuServie;
@@ -58,10 +57,9 @@ public class RoleController extends BaseController {
     @Log("新增角色")
     @PostMapping
     @RequiresPermissions("role:add")
-    public FebsResponse addRole(@RequestBody @Valid Role role) throws FebsException {
+    public void addRole(@Valid Role role) throws FebsException {
         try {
             this.roleService.createRole(role);
-            return new FebsResponse().code("200").message("新增角色成功").status("success");
         } catch (Exception e) {
             message = "新增角色失败";
             log.error(message, e);
@@ -72,11 +70,10 @@ public class RoleController extends BaseController {
     @Log("删除角色")
     @DeleteMapping("/{roleIds}")
     @RequiresPermissions("role:delete")
-    public FebsResponse deleteRoles(@NotBlank(message = "{required}") @PathVariable String roleIds) throws FebsException {
+    public void deleteRoles(@NotBlank(message = "{required}") @PathVariable String roleIds) throws FebsException {
         try {
             String[] ids = roleIds.split(StringPool.COMMA);
             this.roleService.deleteRoles(ids);
-            return new FebsResponse().code("200").message("删除角色成功").status("success");
         } catch (Exception e) {
             message = "删除角色失败";
             log.error(message, e);
@@ -87,10 +84,9 @@ public class RoleController extends BaseController {
     @Log("修改角色")
     @PutMapping
     @RequiresPermissions("role:update")
-    public FebsResponse updateRole(@RequestBody @Valid Role role) throws FebsException {
+    public void updateRole(Role role) throws FebsException {
         try {
             this.roleService.updateRole(role);
-            return new FebsResponse().code("200").message("修改角色成功").status("success");
         } catch (Exception e) {
             message = "修改角色失败";
             log.error(message, e);
@@ -100,7 +96,7 @@ public class RoleController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("role:export")
-    public void export(QueryRequest queryRequest,@RequestBody Role role, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest queryRequest, Role role, HttpServletResponse response) throws FebsException {
         try {
             List<Role> roles = this.roleService.findRoles(role, queryRequest).getRecords();
             ExcelKit.$Export(Role.class, response).downXlsx(roles, false);

@@ -1,15 +1,14 @@
 package cc.mrbird.febs.system.controller;
 
+import cc.mrbird.febs.common.annotation.Limit;
+import cc.mrbird.febs.common.authentication.JWTToken;
+import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.common.domain.ActiveUser;
 import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.exception.code.Code;
-import cc.mrbird.febs.common.service.RedisService;
-import cc.mrbird.febs.common.annotation.Limit;
-import cc.mrbird.febs.common.authentication.JWTToken;
-import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.common.service.RedisService;
 import cc.mrbird.febs.common.utils.*;
 import cc.mrbird.febs.system.dao.LoginLogMapper;
 import cc.mrbird.febs.system.domain.LoginLog;
@@ -20,8 +19,6 @@ import cc.mrbird.febs.system.service.LoginLogService;
 import cc.mrbird.febs.system.service.UserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cc.mrbird.febs.common.utils.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +30,6 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.*;
 
-/**
- * @author wx
- */
-@Slf4j
 @Validated
 @RestController
 public class LoginController {
@@ -62,24 +55,17 @@ public class LoginController {
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password, HttpServletRequest request) throws Exception {
         username = StringUtils.lowerCase(username);
-        try {
-            password = MD5Util.encrypt(username, AesEncryptUtil.desEncrypt(password));
-        }catch (Exception e){
-            log.error("解密密码过程出错",e);
-        }
+        password = MD5Util.encrypt(username, password);
 
         final String errorMessage = "用户名或密码错误";
         User user = this.userManager.getUser(username);
 
-        if (user == null||password == null){
+        if (user == null)
             throw new FebsException(errorMessage);
-        }
-        if (!StringUtils.equals(user.getPassword(), password)){
+        if (!StringUtils.equals(user.getPassword(), password))
             throw new FebsException(errorMessage);
-        }
-        if (User.STATUS_LOCK.equals(user.getStatus())){
+        if (User.STATUS_LOCK.equals(user.getStatus()))
             throw new FebsException("账号已被锁定,请联系管理员！");
-        }
 
         // 更新用户登录时间
         this.userService.updateLoginTime(username);
@@ -97,7 +83,7 @@ public class LoginController {
         user.setId(userId);
 
         Map<String, Object> userInfo = this.generateUserInfo(jwtToken, user);
-        return new FebsResponse().addCodeMessage(Code.C200.getCode(),"认证成功",Code.C200.getDesc(),userInfo);
+        return new FebsResponse().message("认证成功").data(userInfo);
     }
 
     @GetMapping("index/{username}")
@@ -130,9 +116,8 @@ public class LoginController {
             ActiveUser activeUser = mapper.readValue(userOnlineString, ActiveUser.class);
             activeUser.setToken(null);
             if (StringUtils.isNotBlank(username)) {
-                if (StringUtils.equalsIgnoreCase(username, activeUser.getUsername())){
+                if (StringUtils.equalsIgnoreCase(username, activeUser.getUsername()))
                     activeUsers.add(activeUser);
-                }
             } else {
                 activeUsers.add(activeUser);
             }
@@ -163,16 +148,8 @@ public class LoginController {
     }
 
     @GetMapping("logout/{id}")
-    public FebsResponse logout(@NotBlank(message = "{required}") @PathVariable String id) throws Exception {
-        try {
-            this.kickout(id);
-            return new FebsResponse().addCodeMessage(Code.C200.getCode(),"退出系统成功",Code.C200.getDesc());
-        } catch (Exception e) {
-            String message = "退出系统失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-
+    public void logout(@NotBlank(message = "{required}") @PathVariable String id) throws Exception {
+        this.kickout(id);
     }
 
     @PostMapping("regist")

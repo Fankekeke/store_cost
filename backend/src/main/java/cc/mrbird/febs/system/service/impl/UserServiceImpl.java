@@ -3,12 +3,10 @@ package cc.mrbird.febs.system.service.impl;
 import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.service.CacheService;
-import cc.mrbird.febs.common.utils.AesEncryptUtil;
-import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.dao.UserRoleMapper;
-import cc.mrbird.febs.system.domain.DeptUsers;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserRole;
 import cc.mrbird.febs.system.manager.UserManager;
@@ -49,7 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User findByName(String username) {
-        return baseMapper.findDetail(username);
+        return baseMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
 
 
@@ -89,15 +87,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 保存用户角色
         String[] roles = user.getRoleId().split(StringPool.COMMA);
         setUserRoles(user, roles);
-        //查询用户角色
 
         // 创建用户默认的个性化配置
         userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
 
         // 将用户相关信息保存到 Redis中
         userManager.loadUserRedisCache(user);
-        //更新用户所在部门缓存
-        cacheService.saveUserSubordinates(user.getDeptId(),findSubordinates(user.getDeptId()));
     }
 
     @Override
@@ -117,8 +112,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         cacheService.saveUser(user.getUsername());
         cacheService.saveRoles(user.getUsername());
         cacheService.savePermissions(user.getUsername());
-        //更新用户所在部门缓存
-        cacheService.saveUserSubordinates(user.getDeptId(),findSubordinates(user.getDeptId()));
     }
 
     @Override
@@ -143,8 +136,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateById(user);
         // 重新缓存用户信息
         cacheService.saveUser(user.getUsername());
-        //更新用户所在部门缓存
-        cacheService.saveUserSubordinates(user.getDeptId(),findSubordinates(user.getDeptId()));
     }
 
     @Override
@@ -173,10 +164,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional
     public void regist(String username, String password) throws Exception {
         User user = new User();
-        user.setPassword(MD5Util.encrypt(username, AesEncryptUtil.desEncrypt(password)));
+        user.setPassword(MD5Util.encrypt(username, password));
         user.setUsername(username);
         user.setCreateTime(new Date());
-        user.setStatus(User.STATUS_LOCK);
+        user.setStatus(User.STATUS_VALID);
         user.setSsex(User.SEX_UNKNOW);
         user.setAvatar(User.DEFAULT_AVATAR);
         user.setDescription("注册用户");
@@ -189,11 +180,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 创建用户默认的个性化配置
         userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
-        //获取用户部门员工
         // 将用户相关信息保存到 Redis中
         userManager.loadUserRedisCache(user);
-        //更新用户所在部门缓存
-        cacheService.saveUserSubordinates(user.getDeptId(),findSubordinates(user.getDeptId()));
+
     }
 
     @Override
@@ -218,13 +207,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             ur.setRoleId(Long.valueOf(roleId));
             this.userRoleMapper.insert(ur);
         });
-    }
-    @Override
-    public String findSubordinates(Long deptId){
-        return baseMapper.findSubordinates(deptId);
-    }
-    @Override
-    public List<DeptUsers> findSubordinatesMap(){
-        return baseMapper.findSubordinatesMap();
     }
 }

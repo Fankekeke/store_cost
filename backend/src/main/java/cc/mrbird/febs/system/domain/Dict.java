@@ -42,7 +42,4 @@ public class Dict implements Serializable {
     @ExcelField(value = "字段名")
     private String fieldName;
 
-    @Size(max = 20, message = "{noMoreThan}")
-    @ExcelField(value = "字段名")
-    private String otherKeyy;
 }

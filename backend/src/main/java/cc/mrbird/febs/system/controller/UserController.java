@@ -1,12 +1,10 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
-import cc.mrbird.febs.common.domain.FebsResponse;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.utils.AesEncryptUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserConfig;
 import cc.mrbird.febs.system.service.UserConfigService;
@@ -38,8 +36,6 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private UserConfigService userConfigService;
-//    @Autowired
-//    private RoleService roleService;
 
     @GetMapping("check/{username}")
     public boolean checkUserName(@NotBlank(message = "{required}") @PathVariable String username) {
@@ -48,7 +44,6 @@ public class UserController extends BaseController {
 
     @GetMapping("/{username}")
     public User detail(@NotBlank(message = "{required}") @PathVariable String username) {
-        //UserServiceImpl中findByName方法改为调用baseMapper.findDetail(username)
         return this.userService.findByName(username);
     }
 
@@ -61,10 +56,9 @@ public class UserController extends BaseController {
     @Log("新增用户")
     @PostMapping
     @RequiresPermissions("user:add")
-    public FebsResponse addUser(@RequestBody @Valid User user) throws FebsException {
+    public void addUser(@Valid User user) throws FebsException {
         try {
             this.userService.createUser(user);
-            return new FebsResponse().code("200").message("新增用户成功").status("success");
         } catch (Exception e) {
             message = "新增用户失败";
             log.error(message, e);
@@ -75,10 +69,9 @@ public class UserController extends BaseController {
     @Log("修改用户")
     @PutMapping
     @RequiresPermissions("user:update")
-    public FebsResponse updateUser(@RequestBody @Valid User user) throws FebsException {
+    public void updateUser(@Valid User user) throws FebsException {
         try {
             this.userService.updateUser(user);
-            return new FebsResponse().code("200").message("修改用户成功").status("success");
         } catch (Exception e) {
             message = "修改用户失败";
             log.error(message, e);
@@ -89,11 +82,10 @@ public class UserController extends BaseController {
     @Log("删除用户")
     @DeleteMapping("/{userIds}")
     @RequiresPermissions("user:delete")
-    public FebsResponse deleteUsers(@NotBlank(message = "{required}") @PathVariable String userIds) throws FebsException {
+    public void deleteUsers(@NotBlank(message = "{required}") @PathVariable String userIds) throws FebsException {
         try {
             String[] ids = userIds.split(StringPool.COMMA);
             this.userService.deleteUsers(ids);
-            return new FebsResponse().code("200").message("删除用户成功").status("success");
         } catch (Exception e) {
             message = "删除用户失败";
             log.error(message, e);
@@ -102,10 +94,9 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("profile")
-    public FebsResponse updateProfile(@RequestBody @Valid User user) throws FebsException {
+    public void updateProfile(@Valid User user) throws FebsException {
         try {
             this.userService.updateProfile(user);
-            return new FebsResponse().code("200").message("修改个人信息成功").status("success");
         } catch (Exception e) {
             message = "修改个人信息失败";
             log.error(message, e);
@@ -114,12 +105,11 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("avatar")
-    public FebsResponse updateAvatar(
+    public void updateAvatar(
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String avatar) throws FebsException {
         try {
             this.userService.updateAvatar(username, avatar);
-            return new FebsResponse().code("200").message("修改头像成功").status("success");
         } catch (Exception e) {
             message = "修改头像失败";
             log.error(message, e);
@@ -128,10 +118,9 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("userconfig")
-    public FebsResponse updateUserConfig(@RequestBody @Valid UserConfig userConfig) throws FebsException {
+    public void updateUserConfig(@Valid UserConfig userConfig) throws FebsException {
         try {
             this.userConfigService.update(userConfig);
-            return new FebsResponse().code("200").message("修改个性化配置成功").status("success");
         } catch (Exception e) {
             message = "修改个性化配置失败";
             log.error(message, e);
@@ -143,7 +132,7 @@ public class UserController extends BaseController {
     public boolean checkPassword(
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password) {
-        String encryptPassword = MD5Util.encrypt(username, AesEncryptUtil.desEncrypt(password));
+        String encryptPassword = MD5Util.encrypt(username, password);
         User user = userService.findByName(username);
         if (user != null)
             return StringUtils.equals(user.getPassword(), encryptPassword);
@@ -152,12 +141,11 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("password")
-    public FebsResponse updatePassword(
+    public void updatePassword(
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password) throws FebsException {
         try {
-            userService.updatePassword(username, AesEncryptUtil.desEncrypt(password));
-            return new FebsResponse().code("200").message("修改密码成功").status("success");
+            userService.updatePassword(username, password);
         } catch (Exception e) {
             message = "修改密码失败";
             log.error(message, e);
@@ -167,11 +155,10 @@ public class UserController extends BaseController {
 
     @PutMapping("password/reset")
     @RequiresPermissions("user:reset")
-    public FebsResponse resetPassword(@NotBlank(message = "{required}") String usernames) throws FebsException {
+    public void resetPassword(@NotBlank(message = "{required}") String usernames) throws FebsException {
         try {
             String[] usernameArr = usernames.split(StringPool.COMMA);
             this.userService.resetPassword(usernameArr);
-            return new FebsResponse().code("200").message("重置用户密码成功").status("success");
         } catch (Exception e) {
             message = "重置用户密码失败";
             log.error(message, e);
@@ -181,7 +168,7 @@ public class UserController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("user:export")
-    public void export(QueryRequest queryRequest,@RequestBody User user, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest queryRequest, User user, HttpServletResponse response) throws FebsException {
         try {
             List<User> users = this.userService.findUserDetail(user, queryRequest).getRecords();
             ExcelKit.$Export(User.class, response).downXlsx(users, false);

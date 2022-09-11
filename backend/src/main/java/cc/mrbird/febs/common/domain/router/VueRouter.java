@@ -3,6 +3,7 @@ package cc.mrbird.febs.common.domain.router;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;

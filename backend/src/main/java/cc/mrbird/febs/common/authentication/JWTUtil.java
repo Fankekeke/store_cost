@@ -1,7 +1,7 @@
 package cc.mrbird.febs.common.authentication;
 
-import cc.mrbird.febs.common.utils.SpringContextUtil;
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.common.utils.SpringContextUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;

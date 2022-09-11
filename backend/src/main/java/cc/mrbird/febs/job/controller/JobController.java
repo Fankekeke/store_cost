@@ -1,11 +1,11 @@
 package cc.mrbird.febs.job.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.job.domain.Job;
 import cc.mrbird.febs.job.service.JobService;
-import cc.mrbird.febs.common.controller.BaseController;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class JobController extends BaseController {
     @Log("新增定时任务")
     @PostMapping
     @RequiresPermissions("job:add")
-    public void addJob(@RequestBody @Valid Job job) throws FebsException {
+    public void addJob(@Valid Job job) throws FebsException {
         try {
             this.jobService.createJob(job);
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class JobController extends BaseController {
     @Log("修改定时任务")
     @PutMapping
     @RequiresPermissions("job:update")
-    public void updateJob(@RequestBody @Valid Job job) throws FebsException {
+    public void updateJob(@Valid Job job) throws FebsException {
         try {
             this.jobService.updateJob(job);
         } catch (Exception e) {

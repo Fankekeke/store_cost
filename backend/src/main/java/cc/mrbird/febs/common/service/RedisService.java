@@ -1,7 +1,7 @@
 package cc.mrbird.febs.common.service;
 
-import cc.mrbird.febs.common.exception.RedisConnectException;
 import cc.mrbird.febs.common.domain.RedisInfo;
+import cc.mrbird.febs.common.exception.RedisConnectException;
 
 import java.util.List;
 import java.util.Map;

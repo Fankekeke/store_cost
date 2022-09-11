@@ -1,9 +1,9 @@
 package cc.mrbird.febs.common.service.impl;
 
+import cc.mrbird.febs.common.domain.RedisInfo;
 import cc.mrbird.febs.common.exception.RedisConnectException;
 import cc.mrbird.febs.common.function.JedisExecutor;
 import cc.mrbird.febs.common.service.RedisService;
-import cc.mrbird.febs.common.domain.RedisInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Client;

@@ -1,8 +1,8 @@
 package cc.mrbird.febs.common.aspect;
 
+import cc.mrbird.febs.common.annotation.Limit;
 import cc.mrbird.febs.common.domain.LimitType;
 import cc.mrbird.febs.common.exception.LimitAccessException;
-import cc.mrbird.febs.common.annotation.Limit;
 import cc.mrbird.febs.common.utils.IPUtil;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;

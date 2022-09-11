@@ -1,10 +1,9 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
-import cc.mrbird.febs.common.domain.FebsResponse;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.manager.UserManager;
 import cc.mrbird.febs.system.service.MenuService;
@@ -50,10 +49,9 @@ public class MenuController extends BaseController {
     @Log("新增菜单/按钮")
     @PostMapping
     @RequiresPermissions("menu:add")
-    public FebsResponse addMenu(@RequestBody @Valid Menu menu) throws FebsException {
+    public void addMenu(@Valid Menu menu) throws FebsException {
         try {
             this.menuService.createMenu(menu);
-            return new FebsResponse().code("200").message("新增菜单/按钮成功").status("success");
         } catch (Exception e) {
             message = "新增菜单/按钮失败";
             log.error(message, e);
@@ -64,11 +62,10 @@ public class MenuController extends BaseController {
     @Log("删除菜单/按钮")
     @DeleteMapping("/{menuIds}")
     @RequiresPermissions("menu:delete")
-    public FebsResponse deleteMenus(@NotBlank(message = "{required}") @PathVariable String menuIds) throws FebsException {
+    public void deleteMenus(@NotBlank(message = "{required}") @PathVariable String menuIds) throws FebsException {
         try {
             String[] ids = menuIds.split(StringPool.COMMA);
             this.menuService.deleteMeuns(ids);
-            return new FebsResponse().code("200").message("删除菜单/按钮成功").status("success");
         } catch (Exception e) {
             message = "删除菜单/按钮失败";
             log.error(message, e);
@@ -79,10 +76,9 @@ public class MenuController extends BaseController {
     @Log("修改菜单/按钮")
     @PutMapping
     @RequiresPermissions("menu:update")
-    public FebsResponse updateMenu(@RequestBody @Valid Menu menu) throws FebsException {
+    public void updateMenu(@Valid Menu menu) throws FebsException {
         try {
             this.menuService.updateMenu(menu);
-            return new FebsResponse().code("200").message("修改菜单/按钮成功").status("success");
         } catch (Exception e) {
             message = "修改菜单/按钮失败";
             log.error(message, e);
@@ -92,7 +88,7 @@ public class MenuController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("menu:export")
-    public void export(@RequestBody Menu menu, HttpServletResponse response) throws FebsException {
+    public void export(Menu menu, HttpServletResponse response) throws FebsException {
         try {
             List<Menu> menus = this.menuService.findMenuList(menu);
             ExcelKit.$Export(Menu.class, response).downXlsx(menus, false);

@@ -1,12 +1,9 @@
 package cc.mrbird.febs.system.service;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
-import cc.mrbird.febs.system.domain.DeptUsers;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
 
 
 public interface UserService extends IService<User> {
@@ -94,7 +91,4 @@ public interface UserService extends IService<User> {
      */
     void resetPassword(String[] usernames) throws Exception;
 
-    String findSubordinates(Long deptId) throws Exception;
-
-    List<DeptUsers> findSubordinatesMap();
 }

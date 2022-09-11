@@ -45,7 +45,7 @@ public class ScheduleUtils {
     /**
      * 创建定时任务
      */
-    public static void createScheduleJob(Scheduler scheduler, cc.mrbird.febs.job.domain.Job scheduleJob) {
+    public static void createScheduleJob(Scheduler scheduler, Job scheduleJob) {
         try {
             // 构建job信息
             JobDetail jobDetail = JobBuilder.newJob(ScheduleJob.class).withIdentity(getJobKey(scheduleJob.getJobId()))
@@ -76,7 +76,7 @@ public class ScheduleUtils {
     /**
      * 更新定时任务
      */
-    public static void updateScheduleJob(Scheduler scheduler, cc.mrbird.febs.job.domain.Job scheduleJob) {
+    public static void updateScheduleJob(Scheduler scheduler, Job scheduleJob) {
         try {
             TriggerKey triggerKey = getTriggerKey(scheduleJob.getJobId());
 
@@ -110,7 +110,7 @@ public class ScheduleUtils {
     /**
      * 立即执行任务
      */
-    public static void run(Scheduler scheduler, cc.mrbird.febs.job.domain.Job scheduleJob) {
+    public static void run(Scheduler scheduler, Job scheduleJob) {
         try {
             // 参数
             JobDataMap dataMap = new JobDataMap();

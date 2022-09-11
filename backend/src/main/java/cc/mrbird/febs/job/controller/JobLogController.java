@@ -1,8 +1,8 @@
 package cc.mrbird.febs.job.controller;
 
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.job.domain.JobLog;
 import cc.mrbird.febs.job.service.JobLogService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;

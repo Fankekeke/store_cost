@@ -1,6 +1,5 @@
 package cc.mrbird.febs.common.config;
 
-import cc.mrbird.febs.common.interceptor.PaginationInterceptorImpl;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptorImpl();
+        return new PaginationInterceptor();
     }
 
 }

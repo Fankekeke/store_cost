@@ -4,15 +4,13 @@ package cc.mrbird.febs.common.domain;
  * FEBS常量
  */
 public class FebsConstant {
-    public static final String UNDER_LINE = "_";
+
     // user缓存前缀
     public static final String USER_CACHE_PREFIX = "febs.cache.user.";
     // user角色缓存前缀
     public static final String USER_ROLE_CACHE_PREFIX = "febs.cache.user.role.";
     // user权限缓存前缀
     public static final String USER_PERMISSION_CACHE_PREFIX = "febs.cache.user.permission.";
-    // user部门数据权限缓存前缀
-    public static final String USER_PERMISSION_DEPT_DATA_CACHE_PREFIX = "febs.cache.user.dept.data.permission.";
     // user个性化配置前缀
     public static final String USER_CONFIG_CACHE_PREFIX = "febs.cache.user.config.";
     // token缓存前缀
@@ -39,9 +37,5 @@ public class FebsConstant {
     public static final String TIME_MOVIE_DETAIL_URL = "https://ticket-api-m.mtime.cn/movie/detail.api";
     public static final String TIME_MOVIE_COMING_URL = "https://api-m.mtime.cn/Movie/MovieComingNew.api";
     public static final String TIME_MOVIE_COMMENTS_URL = "https://ticket-api-m.mtime.cn/movie/hotComment.api";
-    //数据范围权限
-    public static final int DATA_FILTER_ALL=0;
-    public static final int DATA_FILTER_DEPT=1;
-    public static final int DATA_FILTER_OWN=2;
 
 }

@@ -1,9 +1,9 @@
 package cc.mrbird.febs.system.controller;
 
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.Test;
 import cc.mrbird.febs.system.service.TestService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

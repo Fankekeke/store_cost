@@ -109,23 +109,5 @@ public interface CacheService {
      * @param userId 用户 ID
      */
     void deleteUserConfigs(String userId) throws Exception;
-    /**
-     * 获取某个部门下的用户
-     *
-     * @param deptId 部门 ID
-     */
-    String getUserSubordinates(Long deptId) throws Exception;
-    /**
-     * 保持某个部门下的用户
-     *
-     * @param deptId 部门 ID
-     * @param permissions 用户 ID
-     */
-    String saveUserSubordinates(Long deptId,String permissions) throws Exception;
-    /**
-     * 删除某个部门下的用户缓存
-     *
-     * @param deptId 部门 ID
-     */
-    void deleteUserSubordinates(Long deptId) throws Exception;
+
 }

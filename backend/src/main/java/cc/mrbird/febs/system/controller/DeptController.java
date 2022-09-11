@@ -1,10 +1,9 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
-import cc.mrbird.febs.common.domain.FebsResponse;
+import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
-import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.system.domain.Dept;
 import cc.mrbird.febs.system.service.DeptService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -40,10 +39,9 @@ public class DeptController extends BaseController {
     @Log("新增部门")
     @PostMapping
     @RequiresPermissions("dept:add")
-    public FebsResponse addDept(@RequestBody @Valid Dept dept) throws FebsException {
+    public void addDept(@Valid Dept dept) throws FebsException {
         try {
             this.deptService.createDept(dept);
-            return new FebsResponse().code("200").message("新增部门成功").status("success");
         } catch (Exception e) {
             message = "新增部门失败";
             log.error(message, e);
@@ -54,11 +52,10 @@ public class DeptController extends BaseController {
     @Log("删除部门")
     @DeleteMapping("/{deptIds}")
     @RequiresPermissions("dept:delete")
-    public FebsResponse deleteDepts(@NotBlank(message = "{required}") @PathVariable String deptIds) throws FebsException {
+    public void deleteDepts(@NotBlank(message = "{required}") @PathVariable String deptIds) throws FebsException {
         try {
             String[] ids = deptIds.split(StringPool.COMMA);
             this.deptService.deleteDepts(ids);
-            return new FebsResponse().code("200").message("删除部门成功").status("success");
         } catch (Exception e) {
             message = "删除部门失败";
             log.error(message, e);
@@ -69,10 +66,9 @@ public class DeptController extends BaseController {
     @Log("修改部门")
     @PutMapping
     @RequiresPermissions("dept:update")
-    public FebsResponse updateDept(@RequestBody @Valid Dept dept) throws FebsException {
+    public void updateDept(@Valid Dept dept) throws FebsException {
         try {
             this.deptService.updateDept(dept);
-            return new FebsResponse().code("200").message("修改部门成功").status("success");
         } catch (Exception e) {
             message = "修改部门失败";
             log.error(message, e);
@@ -82,7 +78,7 @@ public class DeptController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("dept:export")
-    public void export(@RequestBody Dept dept, QueryRequest request, HttpServletResponse response) throws FebsException {
+    public void export(Dept dept, QueryRequest request, HttpServletResponse response) throws FebsException {
         try {
             List<Dept> depts = this.deptService.findDepts(dept, request);
             ExcelKit.$Export(Dept.class, response).downXlsx(depts, false);

@@ -37,13 +37,11 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
 
   redis:
     host: 127.0.0.1
     port: 6379
-    password:
+    password: 
     jedis:
       pool:
         min-idle: 8
@@ -81,21 +79,6 @@ febs:
         num: 1000
   shiro:
     # 后端免认证接口 url
-    anonUrl: /login,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico,/file/**,/imagesWeb/**
+    anonUrl: /login,/logout/**,/regist,/user/check/**,/file/**,/api/**,/imagesWeb/**
     # token有效期，单位秒
     jwtTimeOut: 3600
-  # Swagger相关配置
-  swagger:
-    basePackage: cc.mrbird.febs
-    title: API
-    description: API Document.
-    version: 2.0
-    author: FanK
-    url: https://berserker287.github.io/
-    email: fan1ke2ke@gmail.com
-    license: Apache 2.0
-    licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
-
-# 最大导出数量
-export:
-  maxCount: 10000

@@ -1,19 +1,16 @@
 package cc.mrbird.febs.common.utils;
 
+import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.common.function.CacheSelector;
 import cc.mrbird.febs.common.service.CacheService;
-import cc.mrbird.febs.common.authentication.JWTUtil;
-import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.User;
-import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -63,31 +60,6 @@ public class FebsUtil {
         return selectCacheByTemplate(() -> cacheService.getUser(username), () -> userService.findByName(username));
     }
 
-    public static String getUserSubordinates(Long deptId){
-        UserService userService = SpringContextUtil.getBean(UserService.class);
-        CacheService cacheService = SpringContextUtil.getBean(CacheService.class);
-        try {
-            log.debug("query data from redis ······");
-            // 先查 Redis缓存
-           String cacheSubordinates= cacheService.getUserSubordinates(deptId);
-            if (StringUtils.isBlank(cacheSubordinates)) {
-                // 没有记录再查询数据库
-                return userService.findSubordinates(deptId);
-            } else {
-                return cacheSubordinates;
-            }
-        } catch (Exception e) {
-            // 缓存查询出错，则去数据库查询
-            log.error("redis error：", e);
-            log.debug("query data from database ······");
-            try {
-                return userService.findSubordinates(deptId);
-            } catch (Exception e1) {
-                log.error("database error：", e);
-            }
-        }
-        return null;
-    }
     /**
      * token 加密
      *
@@ -141,11 +113,5 @@ public class FebsUtil {
         });
         return StringUtils.lowerCase(result.toString());
     }
-    public static List<Role> getUserRoles(){
-        String token = (String) SecurityUtils.getSubject().getPrincipal();
-        String username = JWTUtil.getUsername(token);
-        RoleService roleService = SpringContextUtil.getBean(RoleService.class);
-        CacheService cacheService = SpringContextUtil.getBean(CacheService.class);
-        return selectCacheByTemplate(() -> cacheService.getRoles(username), () -> roleService.findUserRole(username));
-    }
+
 }

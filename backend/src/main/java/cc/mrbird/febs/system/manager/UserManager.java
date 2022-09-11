@@ -5,14 +5,14 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.service.CacheService;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.common.utils.TreeUtil;
-import cc.mrbird.febs.system.service.MenuService;
-import cc.mrbird.febs.system.service.RoleService;
-import cc.mrbird.febs.system.service.UserConfigService;
-import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserConfig;
+import cc.mrbird.febs.system.service.MenuService;
+import cc.mrbird.febs.system.service.RoleService;
+import cc.mrbird.febs.system.service.UserConfigService;
+import cc.mrbird.febs.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,8 +119,7 @@ public class UserManager {
      */
     public void loadUserRedisCache(User user) throws Exception {
         // 缓存用户
-//        cacheService.saveUser(user.getUsername());
-        cacheService.saveUser(user);
+        cacheService.saveUser(user.getUsername());
         // 缓存用户角色
         cacheService.saveRoles(user.getUsername());
         // 缓存用户权限
@@ -156,13 +155,9 @@ public class UserManager {
                 cacheService.deleteUser(user.getUsername());
                 cacheService.deleteRoles(user.getUsername());
                 cacheService.deletePermissions(user.getUsername());
-                cacheService.deleteUserSubordinates(user.getDeptId());
             }
             cacheService.deleteUserConfigs(userId);
         }
     }
 
-    public String findSubordinates(Long deptId) throws Exception{
-        return userService.findSubordinates(deptId);
-    }
 }
