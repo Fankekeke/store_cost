@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableScheduling
 @EnableAsync
-public class FebsApplication {
+public class StoreApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(FebsApplication.class)
+        new SpringApplicationBuilder(StoreApplication.class)
                 .run(args);
     }
 }

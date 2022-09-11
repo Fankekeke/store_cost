@@ -1,6 +1,5 @@
 package cc.mrbird.febs.cos.controller;
 
-
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.SupplierInfo;
 import cc.mrbird.febs.cos.service.ISupplierInfoService;
@@ -23,7 +22,8 @@ public class SupplierInfoController {
 
     /**
      * 分页查询供应商信息
-     * @param page 分页对象
+     *
+     * @param page         分页对象
      * @param supplierInfo 供应商信息
      * @return 结果
      */
@@ -34,6 +34,7 @@ public class SupplierInfoController {
 
     /**
      * 添加供应商信息
+     *
      * @param supplierInfo 供应商信息
      * @return 结果
      */
@@ -42,6 +43,12 @@ public class SupplierInfoController {
         return R.ok(supplierInfoService.save(supplierInfo));
     }
 
+    /**
+     * 修改供应商信息
+     *
+     * @param supplierInfo 供应商信息
+     * @return 结果
+     */
     @PutMapping
     public R edit(SupplierInfo supplierInfo) {
         return R.ok(supplierInfoService.updateById(supplierInfo));
