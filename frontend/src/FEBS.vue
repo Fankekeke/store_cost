@@ -27,6 +27,9 @@ export default {
 }
 </script>
 <style lang="less">
+  body {
+    font-family: SimHei,serif;
+  }
   :global {
     .dragable-ghost {
       border: 1px dashed #aaaaaa;

@@ -110,6 +110,7 @@ export default {
       }
       .global-header-menu{
         display: inline-block;
+        font-family: SimHei,serif;
       }
       .global-header-right{
         float: right;
