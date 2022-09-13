@@ -18,7 +18,8 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
 
     /**
      * 分页查询入库记录
-     * @param page 分页对象
+     *
+     * @param page          分页对象
      * @param storageRecord 入库记录
      * @return 结果
      */
@@ -29,6 +30,7 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
 
     /**
      * 入库记录详情
+     *
      * @param code 入库单号
      * @return 结果
      */

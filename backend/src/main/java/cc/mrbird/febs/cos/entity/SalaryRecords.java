@@ -3,6 +3,8 @@ package cc.mrbird.febs.cos.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -109,5 +111,10 @@ public class SalaryRecords implements Serializable {
      */
     private String remark;
 
+    /**
+     * 员工姓名
+     */
+    @TableField(exist = false)
+    private String staffName;
 
 }

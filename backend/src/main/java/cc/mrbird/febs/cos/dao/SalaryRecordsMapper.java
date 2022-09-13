@@ -16,7 +16,7 @@ public interface SalaryRecordsMapper extends BaseMapper<SalaryRecords> {
     /**
      * 分页查询员工薪资发放记录
      *
-     * @param page          分页读写
+     * @param page          分页对象
      * @param salaryRecords 员工薪资发放记录
      * @return 结果
      */

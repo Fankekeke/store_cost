@@ -80,4 +80,6 @@ public class StorehouseInfo implements Serializable {
     private String deliveryOrderNumber;
 
 
+
+
 }

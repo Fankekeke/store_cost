@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.cos.dao.StorehouseInfoMapper">
 
+    <!-- 分页查询库房信息 -->
+    <select id="selectStorehousePage" resultType="java.util.LinkedHashMap">
+        SELECT si.id,
+        si.material_name AS materialName,
+        si.material_type AS materialType,
+        si.measurement_unit AS measurementUnit,
+        si.quantity,
+        si.transaction_type AS transactionType,
+        si.create_date AS createDate,
+        si.remark,
+        si.model,
+        si.unit_price AS unitPrice,
+        si.inbound_order_number AS inboundOrderNumber,
+        si.delivery_order_number AS deliveryOrderNumber
+        FROM storehouse_info si
+        WHERE si.transactionType = 0
+        <if test="storehouseInfo.materialName != null and storehouseInfo.materialName != ''">
+            and si.material_name LIKE CONCAT('%',#{storehouseInfo.materialName},'%')
+        </if>
+        <if test="storehouseInfo.model != null and storehouseInfo.model != ''">
+            and si.model LIKE CONCAT('%',#{storehouseInfo.model},'%')
+        </if>
+        <if test="storehouseInfo.materialType != null">
+            and si.material_type = #{storehouseInfo.materialType}
+        </if>
+        ORDER BY si.create_date DESC
+    </select>
 </mapper>

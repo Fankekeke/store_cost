@@ -19,6 +19,7 @@
         <if test="supplierInfo.purchaseType != null">
             and si.purchase_type = #{supplierInfo.purchaseType}
         </if>
+        ORDER BY si.create_date DESC
     </select>
 
 </mapper>

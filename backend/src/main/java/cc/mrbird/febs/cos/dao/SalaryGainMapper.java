@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -21,4 +22,12 @@ public interface SalaryGainMapper extends BaseMapper<SalaryGain> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectSalaryPage(Page<SalaryGain> page, @Param("salaryGain") SalaryGain salaryGain);
+
+    /**
+     * 获取员工薪资涨幅情况
+     *
+     * @param staffCode 员工编号
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectSalaryByStaffCode(@Param("staffCode") String staffCode);
 }

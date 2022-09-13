@@ -36,7 +36,11 @@ public class SalaryGainServiceImpl extends ServiceImpl<SalaryGainMapper, SalaryG
      */
     @Override
     public LinkedHashMap<String, Object> salaryDetail(String code) {
-        return null;
+        return new LinkedHashMap<String, Object>() {
+            {
+                put("record", baseMapper.selectSalaryByStaffCode(code));
+            }
+        };
     }
 
     /**

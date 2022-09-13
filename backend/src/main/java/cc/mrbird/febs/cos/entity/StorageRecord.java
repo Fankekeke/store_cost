@@ -3,6 +3,8 @@ package cc.mrbird.febs.cos.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -59,5 +61,22 @@ public class StorageRecord implements Serializable {
      */
     private String remark;
 
+    /**
+     * 经手人
+     */
+    @TableField(exist = false)
+    private String handlerName;
+
+    /**
+     * 保管人
+     */
+    @TableField(exist = false)
+    private String custodianName;
+
+    /**
+     * 供应商名称
+     */
+    @TableField(exist = false)
+    private String supplierName;
 
 }

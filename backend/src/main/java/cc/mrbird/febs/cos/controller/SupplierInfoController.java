@@ -29,7 +29,7 @@ public class SupplierInfoController {
      */
     @GetMapping("/page")
     public R page(Page<SupplierInfo> page, SupplierInfo supplierInfo) {
-        return R.ok();
+        return R.ok(supplierInfoService.selectSupplierPage(page, supplierInfo));
     }
 
     /**
