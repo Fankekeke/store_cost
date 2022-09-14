@@ -3,6 +3,8 @@ package cc.mrbird.febs.cos.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -43,5 +45,11 @@ public class OrderInfo implements Serializable {
      * 创建时间
      */
     private String createTime;
+
+    /**
+     * 产品信息
+     */
+    @TableField(exist = false)
+    private String material;
 
 }

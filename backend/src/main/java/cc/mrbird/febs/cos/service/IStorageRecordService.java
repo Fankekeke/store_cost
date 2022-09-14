@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -27,7 +28,7 @@ public interface IStorageRecordService extends IService<StorageRecord> {
      * @param code 入库单号
      * @return 结果
      */
-    LinkedHashMap<String, Object> storageRecordDetail(String code);
+    List<LinkedHashMap<String, Object>> storageRecordDetail(String code);
 
     /**
      * 添加入库记录

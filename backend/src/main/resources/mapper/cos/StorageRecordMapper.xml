@@ -40,16 +40,17 @@
     <!-- 入库记录详情 -->
     <select id="storageRecordDetail" resultType="java.util.LinkedHashMap">
         SELECT si.id,
-               si.material_name    AS materialName,
-               si.material_type    AS materialType,
-               si.measurement_unit AS measurementUnit,
-               si.quantity,
-               si.transaction_type AS transactionType,
-               si.create_date      AS createDate,
-               si.remark,
-               si.model,
-               si.unit_price       AS unitPrice,
-            LEFT JOIN storage_record sr
+        si.material_name AS materialName,
+        si.material_type AS materialType,
+        si.measurement_unit AS measurementUnit,
+        si.quantity,
+        si.transaction_type AS transactionType,
+        si.create_date AS createDate,
+        si.remark,
+        si.model,
+        si.unit_price AS unitPrice
+        FROM storehouse_info si
+        LEFT JOIN storage_record sr
         on sr.code = si.inbound_order_number
         WHERE and sr.code = #{code}
         ORDER BY si.create_date DESC

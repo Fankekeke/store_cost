@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -27,7 +28,7 @@ public interface IOutStockRecordService extends IService<OutStockRecord> {
      * @param code 出库单号
      * @return 结果
      */
-    LinkedHashMap<String, Object> outStockDetail(String code);
+    List<LinkedHashMap<String, Object>> outStockDetail(String code);
 
     /**
      * 添加物料出库信息

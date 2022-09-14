@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -27,5 +28,22 @@ public interface ISalaryRecordsService extends IService<SalaryRecords> {
      * @param recordId 薪资发放ID
      * @return 结果
      */
-    LinkedHashMap<String, Object> selectSalaryDetail(Integer recordId);
+    SalaryRecords selectSalaryDetail(Integer recordId);
+
+    /**
+     * 根据员工编号获取薪资发放记录
+     *
+     * @param staffCode 员工编号
+     * @param year      所属年份
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectSalaryRecordsByStaff(String staffCode, String year);
+
+    /**
+     * 添加员工薪资发放记录
+     *
+     * @param salaryRecords 员工薪资发放记录
+     * @return 结果
+     */
+    boolean saveSalaryRecords(SalaryRecords salaryRecords) throws Exception;
 }

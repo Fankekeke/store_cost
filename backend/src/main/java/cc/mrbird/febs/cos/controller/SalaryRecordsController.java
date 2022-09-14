@@ -30,9 +30,20 @@ public class SalaryRecordsController {
      */
     @GetMapping("/page")
     public R page(Page<SalaryRecords> page, SalaryRecords salaryRecords) {
-        return R.ok();
+        return R.ok(salaryRecordsService.selectSalaryRecordsPage(page, salaryRecords));
     }
 
+    /**
+     * 根据员工编号获取薪资发放记录
+     *
+     * @param staffCode 员工编号
+     * @param year      所属年份
+     * @return 结果
+     */
+    @GetMapping("/salaryRecordsByStaff")
+    public R selectSalaryRecordsByStaff(String staffCode, String year) {
+        return R.ok(salaryRecordsService.selectSalaryRecordsByStaff(staffCode, year));
+    }
     /**
      * 查询薪资发放详情
      *
@@ -51,8 +62,8 @@ public class SalaryRecordsController {
      * @return 结果
      */
     @PostMapping
-    public R add(SalaryRecords salaryRecords) {
-        return R.ok(salaryRecordsService.save(salaryRecords));
+    public R add(SalaryRecords salaryRecords) throws Exception {
+        return R.ok(salaryRecordsService.saveSalaryRecords(salaryRecords));
     }
 
     /**

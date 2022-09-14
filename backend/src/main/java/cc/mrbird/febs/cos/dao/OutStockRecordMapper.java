@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -22,4 +23,11 @@ public interface OutStockRecordMapper extends BaseMapper<OutStockRecord> {
      */
     IPage<LinkedHashMap<String, Object>> selectOutStockRecordPage(Page<OutStockRecord> page, @Param("outStockRecord") OutStockRecord outStockRecord);
 
+    /**
+     * 查询出库记录详情
+     *
+     * @param code 出库单号
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> outStockDetail(@Param("code") String code);
 }

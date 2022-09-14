@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -36,5 +37,5 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @param code 订单编号
      * @return 结果
      */
-    LinkedHashMap<String, Object> orderDetail(String code);
+    List<LinkedHashMap<String, Object>> orderDetail(String code);
 }

@@ -68,6 +68,12 @@ public class StorageRecord implements Serializable {
     private String handlerName;
 
     /**
+     * 物料信息
+     */
+    @TableField(exist = false)
+    private String material;
+
+    /**
      * 保管人
      */
     @TableField(exist = false)

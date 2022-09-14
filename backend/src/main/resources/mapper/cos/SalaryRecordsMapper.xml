@@ -39,4 +39,31 @@
         </if>
         ORDER BY sr.year DESC, sr.month DESC, sr.payroll DESC
     </select>
+
+    <!-- 根据员工编号获取薪资发放记录 -->
+    <select id="selectSalaryRecordsByStaff" resultType="java.util.LinkedHashMap">
+        SELECT sr.id,
+        sr.staff_code AS staffCode,
+        sr.year,
+        sr.month,
+        sr.income,
+        sr.basic_wage AS basicWage,
+        sr.post_allowance AS postAllowance,
+        sr.performance_bonus AS performanceBonus,
+        sr.overtime_pay AS overtimePay,
+        sr.holiday_costs AS holidayCosts,
+        sr.pension,
+        sr.unemployment,
+        sr.medical_insurance AS medicalInsurance,
+        sr.tax,
+        sr.housing_fund AS housingFund,
+        sr.payroll,
+        sr.create_date AS createDate,
+        sr.remark
+        FROM salary_records sr
+        WHERE 1 = 1
+        AND sr.staff_code = #{staffCode}
+        AND sr.year = #{year}
+        ORDER BY sr.month DESC
+    </select>
 </mapper>

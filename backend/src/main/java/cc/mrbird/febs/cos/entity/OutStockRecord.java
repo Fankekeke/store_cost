@@ -51,6 +51,6 @@ public class OutStockRecord implements Serializable {
     /**
      * 物料信息
      */
-    private Material material;
+    private String material;
 
 }

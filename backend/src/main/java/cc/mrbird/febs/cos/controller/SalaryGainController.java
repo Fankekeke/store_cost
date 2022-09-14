@@ -30,7 +30,7 @@ public class SalaryGainController {
      */
     @GetMapping("/page")
     public R page(Page<SalaryGain> page, SalaryGain salaryGain) {
-        return R.ok();
+        return R.ok(salaryGainService.selectSalaryPage(page, salaryGain));
     }
 
     /**

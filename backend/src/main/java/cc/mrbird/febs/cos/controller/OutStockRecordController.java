@@ -30,7 +30,7 @@ public class OutStockRecordController {
      */
     @GetMapping("/page")
     public R page(Page<OutStockRecord> page, OutStockRecord outStockRecord) {
-        return R.ok();
+        return R.ok(outStockRecordService.selectOutStockRecordPage(page, outStockRecord));
     }
 
     /**

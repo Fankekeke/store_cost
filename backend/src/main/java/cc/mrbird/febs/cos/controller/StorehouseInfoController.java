@@ -30,7 +30,7 @@ public class StorehouseInfoController {
      */
     @GetMapping("/page")
     public R page(Page<StorehouseInfo> page, StorehouseInfo storehouseInfo) {
-        return R.ok();
+        return R.ok(storehouseInfoService.selectStorehousePage(page, storehouseInfo));
     }
 
     /**
@@ -41,7 +41,7 @@ public class StorehouseInfoController {
      */
     @GetMapping("{name}")
     public R detail(@PathVariable("name") String name) {
-        return R.ok();
+        return R.ok(storehouseInfoService.selectStorehouseDetail(name));
     }
 
     /**

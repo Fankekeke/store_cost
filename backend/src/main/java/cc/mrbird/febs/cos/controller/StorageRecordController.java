@@ -30,7 +30,7 @@ public class StorageRecordController {
      */
     @GetMapping("/page")
     public R page(Page<StorageRecord> page, StorageRecord storageRecord) {
-        return R.ok();
+        return R.ok(storageRecordService.selectStorageRecordPage(page, storageRecord));
     }
 
     /**

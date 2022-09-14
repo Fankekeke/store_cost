@@ -36,6 +36,11 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
      */
     @Override
     public LinkedHashMap<String, Object> selectStorehouseDetail(String name) {
-        return null;
+        return new LinkedHashMap<String, Object>() {
+            {
+                put("in", baseMapper.selectStorehouseDetail(name, 1));
+                put("out", baseMapper.selectStorehouseDetail(name, 2));
+            }
+        };
     }
 }

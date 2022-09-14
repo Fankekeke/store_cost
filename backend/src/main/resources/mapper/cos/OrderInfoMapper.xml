@@ -2,4 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.cos.dao.OrderInfoMapper">
 
+    <!-- 分页查询订单信息 -->
+    <select id="selectOrderPage" resultType="java.util.LinkedHashMap">
+        SELECT
+        oi.id,
+        oi.code ,
+        oi.total_price AS totalPrice ,
+        oi.handler_code AS handlerCode,
+        oi.create_time AS createTime,
+        si.staff_name AS handlerName,
+        si.avatar AS handlerAvatar,
+        FROM order_info oi
+        LEFT JOIN staff_info si ON oi.handler_code = si.staff_code
+        WHERE 1 = 1
+        <if test="orderInfo.handlerName != null and orderInfo.handlerName != ''">
+            and si.staff_name LIKE CONCAT('%',#{orderInfo.handlerName},'%')
+        </if>
+        <if test="orderInfo.code != null and orderInfo.code != ''">
+            and oi.code LIKE CONCAT('%',#{orderInfo.code},'%')
+        </if>
+    </select>
+
+    <!-- 查询订单详情 -->
+    <select id="orderDetail" resultType="java.util.LinkedHashMap">
+        SELECT si.id,
+        si.material_name AS materialName,
+        si.material_type AS materialType,
+        si.measurement_unit AS measurementUnit,
+        si.quantity,
+        si.transaction_type AS transactionType,
+        si.create_date AS createDate,
+        si.remark,
+        si.model,
+        si.unit_price AS unitPrice
+        FROM storehouse_info si
+        LEFT JOIN order_info oi on oi.code = si.delivery_order_number
+        WHERE and oi.code = #{code}
+        ORDER BY si.create_date DESC
+    </select>
 </mapper>

@@ -2,4 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.cos.dao.OutStockRecordMapper">
 
+    <!-- 分页查询出库记录 -->
+    <select id="selectOutStockRecordPage" resultType="java.util.LinkedHashMap">
+        SELECT osr.id,
+        osr.code,
+        osr.handler_code AS handlerCode,
+        osr.custodian_code AS custodianCode,
+        osr.create_date AS createDate,
+        osr.remark,
+        si1.staff_name AS handlerName,
+        si2.staff_name AS custodianName,
+        si1.avatar AS handlerAvatar,
+        si2.avatar AS custodianAvatar,
+        FROM out_stock_record osr
+        LEFT JOIN staff_info si1 on osr.handler_code = si1.staff_code
+        LEFT JOIN staff_info si2 on osr.custodian_code = si2.staff_code
+        WHERE 1 = 1
+        <if test="outStockRecord.code != null and outStockRecord.code != ''">
+            and osr.code LIKE CONCAT('%',#{outStockRecord.code},'%')
+        </if>
+        <if test="outStockRecord.handlerName != null and outStockRecord.handlerName != ''">
+            and si1.staff_name LIKE CONCAT('%',#{outStockRecord.handlerName},'%')
+        </if>
+        <if test="outStockRecord.custodianName != null and outStockRecord.custodianName != ''">
+            and si2.staff_name LIKE CONCAT('%',#{outStockRecord.custodianName},'%')
+        </if>
+        ORDER BY osr.create_date DESC
+    </select>
+
+    <!-- 查询出库记录详情 -->
+    <select id="outStockDetail" resultType="java.util.LinkedHashMap">
+        SELECT si.id,
+        si.material_name AS materialName,
+        si.material_type AS materialType,
+        si.measurement_unit AS measurementUnit,
+        si.quantity,
+        si.transaction_type AS transactionType,
+        si.create_date AS createDate,
+        si.remark,
+        si.model,
+        si.unit_price AS unitPrice
+        FROM storehouse_info si
+        LEFT JOIN out_stock_record osr
+        on osr.code = si.delivery_order_number
+        WHERE and osr.code = #{code}
+        ORDER BY si.create_date DESC
+    </select>
 </mapper>
