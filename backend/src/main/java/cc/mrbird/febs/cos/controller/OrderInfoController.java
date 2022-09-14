@@ -77,4 +77,15 @@ public class OrderInfoController {
         return R.ok(orderInfoService.removeByIds(ids));
     }
 
+    /**
+     * 月度统计【收益，支出】
+     *
+     * @param year  年度
+     * @param month 季度
+     * @return 结果
+     */
+    @GetMapping("statistics/month/")
+    public R selectStatisticsByMonth(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
+        return R.ok();
+    }
 }
