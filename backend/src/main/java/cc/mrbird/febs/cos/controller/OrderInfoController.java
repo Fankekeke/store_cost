@@ -41,7 +41,7 @@ public class OrderInfoController {
      */
     @GetMapping("/{code}")
     public R detail(@PathVariable("code") String code) {
-        return R.ok();
+        return R.ok(orderInfoService.orderDetail(code));
     }
 
     /**
@@ -52,7 +52,7 @@ public class OrderInfoController {
      */
     @PostMapping
     public R add(OrderInfo orderInfo) {
-        return R.ok();
+        return R.ok(orderInfoService.saveOrder(orderInfo));
     }
 
     /**
@@ -84,8 +84,8 @@ public class OrderInfoController {
      * @param month 季度
      * @return 结果
      */
-    @GetMapping("statistics/month/")
+    @GetMapping("statistics")
     public R selectStatisticsByMonth(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
-        return R.ok();
+        return R.ok(orderInfoService.selectStatisticsByMonth(year, month));
     }
 }

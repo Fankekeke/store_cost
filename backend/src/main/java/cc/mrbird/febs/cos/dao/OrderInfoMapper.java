@@ -30,4 +30,14 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> orderDetail(@Param("code") String code);
+
+    /**
+     * 根据时间查询订单信息
+     *
+     * @param year  年度
+     * @param month 季度
+     * @return 结果
+     */
+    List<OrderInfo> selectOrderInfoByDate(@Param("year") String year, @Param("month") String month);
+
 }

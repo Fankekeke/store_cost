@@ -40,4 +40,23 @@
         WHERE and oi.code = #{code}
         ORDER BY si.create_date DESC
     </select>
+
+    <!-- 根据时间查询订单信息 -->
+    <select id="selectOrderInfoByDate" resultType="cc.mrbird.febs.cos.entity.OrderInfo">
+        SELECT
+        oi.id,
+        oi.code ,
+        oi.total_price AS totalPrice ,
+        oi.handler_code AS handlerCode,
+        oi.create_time AS createTime
+        FROM order_info oi
+        WHERE 1 = 1
+        <if test="month != null and month != ''">
+            AND YEAR(oi.create_time) = #{year}
+            AND MONTH(oi.create_time) = #{month}
+        </if>
+        <if test="month == null">
+            AND YEAR(oi.create_time) = #{year}
+        </if>
+    </select>
 </mapper>

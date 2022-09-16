@@ -55,4 +55,26 @@
         WHERE and sr.code = #{code}
         ORDER BY si.create_date DESC
     </select>
+
+    <!-- 根据时间获取入库记录 -->
+    <select id="selectStorageRecordByDate" resultType="cc.mrbird.febs.cos.entity.StorageRecord">
+        SELECT
+        sr.id,
+        sr.code,
+        sr.supplier_id AS supplierId,
+        sr.handler_code AS handlerCode,
+        sr.custodian_code AS custodianCode,
+        sr.total_price AS totalPrice,
+        sr.create_date AS createDate,
+        sr.remark
+        FROM storage_record sr
+        WHERE 1 = 1
+        <if test="month != null and month != ''">
+            AND YEAR(sr.create_date) = #{year}
+            AND MONTH(sr.create_date) = #{month}
+        </if>
+        <if test="month == null">
+            AND YEAR(sr.create_date) = #{year}
+        </if>
+    </select>
 </mapper>

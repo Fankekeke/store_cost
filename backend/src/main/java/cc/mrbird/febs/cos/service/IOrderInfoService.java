@@ -38,4 +38,22 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> orderDetail(String code);
+
+    /**
+     * 月度统计【收益，支出，订单出入库类型】
+     *
+     * @param year  年度
+     * @param month 季度
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectStatisticsByMonth(String year, String month);
+
+    /**
+     * 获取订单产品列表比率
+     *
+     * @param year  年度
+     * @param month 季度
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectMaterialTypeRate(String year, String month);
 }

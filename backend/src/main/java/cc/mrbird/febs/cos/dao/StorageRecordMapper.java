@@ -30,4 +30,13 @@ public interface StorageRecordMapper extends BaseMapper<StorageRecord> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> storageRecordDetail(@Param("code") String code);
+
+    /**
+     * 根据时间获取入库记录
+     *
+     * @param year  统计年度
+     * @param month 统计月度
+     * @return 结果
+     */
+    List<StorageRecord> selectStorageRecordByDate(@Param("year") String year, @Param("month") String month);
 }
