@@ -88,4 +88,16 @@ public class OrderInfoController {
     public R selectStatisticsByMonth(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
         return R.ok(orderInfoService.selectStatisticsByMonth(year, month));
     }
+
+    /**
+     * 获取订单产品列表比率
+     *
+     * @param year  年度
+     * @param month 季度
+     * @return 结果
+     */
+    @GetMapping("statistics/rate")
+    public R selectStatisticsByYear(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
+        return R.ok(orderInfoService.selectMaterialTypeRate(year, month));
+    }
 }

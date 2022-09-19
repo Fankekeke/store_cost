@@ -9,6 +9,7 @@ import cc.mrbird.febs.cos.entity.StorageRecord;
 import cc.mrbird.febs.cos.entity.StorehouseInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IStorehouseInfoService;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
@@ -20,13 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -127,11 +124,23 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<StorehouseInfo> storehouseInfoList = storehouseInfoService.list(Wrappers.<StorehouseInfo>lambdaQuery().in(StorehouseInfo::getDeliveryOrderNumber, orderNumberList));
         Map<Integer, List<StorehouseInfo>> storeTypeMap = storehouseInfoList.stream().collect(Collectors.groupingBy(StorehouseInfo::getMaterialType));
         // 总订单数量
-        // BigDecimal allPrice = storehouseInfoList.stream().map(StorehouseInfo::getQuantity).reduce(BigDecimal.ZERO,BigDecimal::add));
+        BigDecimal allOrderNumber = storehouseInfoList.stream().map(StorehouseInfo::getQuantity).reduce(BigDecimal.ZERO,BigDecimal::add);
         // 总价格
+        BigDecimal allPrice = storehouseInfoList.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>() {
+            {
+                put("allOrderNumber", allOrderNumber);
+                put("allPrice", allPrice);
+            }
+        };
         storeTypeMap.forEach((key, value) -> {
-            //
+            List<StorehouseInfo> item = storeTypeMap.get(key);
+            if (CollectionUtil.isNotEmpty(item)) {
+                result.put(key + "orderNumber", item.stream().map(StorehouseInfo::getQuantity).reduce(BigDecimal.ZERO,BigDecimal::add));
+                result.put(key + "price", item.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
+            }
         });
-        return null;
+        return result;
     }
 }
