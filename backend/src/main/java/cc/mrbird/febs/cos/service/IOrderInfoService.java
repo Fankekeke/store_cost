@@ -56,4 +56,5 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectMaterialTypeRate(String year, String month);
+
 }
