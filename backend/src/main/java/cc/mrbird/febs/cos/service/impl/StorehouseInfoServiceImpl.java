@@ -93,4 +93,16 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
         replenishment.setReplenishment(JSONUtil.toJsonStr(result));
         replenishmentInfoService.save(replenishment);
     }
+
+    /**
+     * 远程调用物料信息
+     *
+     * @param materialName 物料名称
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> selectMaterialFuzzy(String materialName) {
+        List<StorehouseInfo> storehouseList = this.list(Wrappers.<StorehouseInfo>lambdaQuery().eq(StorehouseInfo::getMaterialType, 0).like(StorehouseInfo::getMaterialName, materialName));
+        return null;
+    }
 }

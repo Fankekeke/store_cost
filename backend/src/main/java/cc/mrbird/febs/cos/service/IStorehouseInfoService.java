@@ -37,4 +37,12 @@ public interface IStorehouseInfoService extends IService<StorehouseInfo> {
      */
     void diskLibrary();
 
+    /**
+     * 远程调用物料信息
+     *
+     * @param materialName 物料名称
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectMaterialFuzzy(String materialName);
+
 }
