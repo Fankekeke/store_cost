@@ -158,7 +158,7 @@ export default {
         dataIndex: 'staffCode'
       }, {
         title: '员工姓名',
-        dataIndex: 'name'
+        dataIndex: 'staffName'
       }, {
         title: '联系方式',
         dataIndex: 'email'
@@ -212,9 +212,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return <a-tag>已入职</a-tag>
+              return <a-tag color="blue">已入职</a-tag>
             case 2:
-              return <a-tag>已离职</a-tag>
+              return <a-tag color="red">已离职</a-tag>
             default:
               return '- -'
           }
@@ -230,16 +230,6 @@ export default {
           }
         }
       }, {
-        title: '联系方式',
-        dataIndex: 'email',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      },{
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: {customRender: 'operation'}

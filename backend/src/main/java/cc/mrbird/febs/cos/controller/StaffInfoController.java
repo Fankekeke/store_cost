@@ -62,10 +62,12 @@ public class StaffInfoController {
         // 设置员工编号
         staffInfo.setStaffCode("STAFF-" + System.currentTimeMillis());
         staffInfo.setOnBoardTime(DateUtil.formatDate(new Date()));
+        staffInfo.setStaffStatus(1);
 
         SalaryGain salaryGain = new SalaryGain();
         salaryGain.setStaffCode(staffInfo.getStaffCode());
         salaryGain.setType(0);
+        salaryGain.setSalary(staffInfo.getSalary());
         salaryGain.setCurrentFlag(1);
         salaryGain.setCreateDate(DateUtil.formatDate(new Date()));
         salaryGainService.save(salaryGain);

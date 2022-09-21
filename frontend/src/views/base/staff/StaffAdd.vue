@@ -10,7 +10,7 @@
     </template>
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
-        <a-col :span="12">
+        <a-col :span="8">
           <a-form-item label='员工姓名' v-bind="formItemLayout">
             <a-input v-decorator="[
             'staffName',
@@ -18,7 +18,7 @@
             ]"/>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="8">
           <a-form-item label='联系方式' v-bind="formItemLayout">
             <a-input v-decorator="[
             'email',
@@ -26,7 +26,7 @@
             ]"/>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="8">
           <a-form-item label='性别' v-bind="formItemLayout">
             <a-select v-decorator="[
               'staffSex',
@@ -37,7 +37,7 @@
             </a-select>
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="8">
           <a-form-item label='员工类型' v-bind="formItemLayout">
             <a-select v-decorator="[
               'staffType',
@@ -51,6 +51,24 @@
             </a-select>
           </a-form-item>
         </a-col>
+        <a-col :span="8">
+          <a-form-item label="出生日期">
+            <a-date-picker style="width: 100%" v-decorator="['birthDate',{rules: [{ required: true, message: '出生日期' }]}]"/>
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item label="试用薪资">
+            <a-input-number style="width: 100%" v-decorator="[
+              'salary', { rules: [{ required: true, message: '请填写试用薪资!' }] }
+              ]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="24">
+          <a-form-item label="备注">
+            <a-textarea placeholder="Basic usage" :rows="4" v-decorator="['remark']"/>
+          </a-form-item>
+        </a-col>
         <a-col :span="24">
           <a-form-item label='员工照片' v-bind="formItemLayout">
             <a-upload
@@ -61,7 +79,7 @@
               @preview="handlePreview"
               @change="picHandleChange"
             >
-              <div v-if="fileList.length < 8">
+              <div v-if="fileList.length < 2">
                 <a-icon type="plus" />
                 <div class="ant-upload-text">
                   Upload
@@ -80,6 +98,7 @@
 
 <script>
 import {mapState} from 'vuex'
+import moment from 'moment'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -151,6 +170,9 @@ export default {
       })
       this.form.validateFields((err, values) => {
         values.avatar = images.length > 0 ? images.join(',') : null
+        if (values.birthDate) {
+          values.birthDate = moment(values.birthDate).format('YYYY-MM-DD')
+        }
         if (!err) {
           this.loading = true
           this.$post('/cos/staff-info', {

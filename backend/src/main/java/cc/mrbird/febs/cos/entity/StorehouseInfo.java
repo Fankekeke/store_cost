@@ -3,6 +3,9 @@ package cc.mrbird.febs.cos.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,6 +25,7 @@ public class StorehouseInfo implements Serializable {
     /**
      * 主键ID
      */
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
