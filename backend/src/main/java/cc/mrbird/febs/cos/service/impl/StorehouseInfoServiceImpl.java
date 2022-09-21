@@ -1,21 +1,36 @@
 package cc.mrbird.febs.cos.service.impl;
 
+import cc.mrbird.febs.cos.entity.ReplenishmentInfo;
 import cc.mrbird.febs.cos.entity.StorehouseInfo;
 import cc.mrbird.febs.cos.dao.StorehouseInfoMapper;
+import cc.mrbird.febs.cos.service.IReplenishmentInfoService;
 import cc.mrbird.febs.cos.service.IStorehouseInfoService;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
  */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper, StorehouseInfo> implements IStorehouseInfoService {
-
+    
+    private final IReplenishmentInfoService replenishmentInfoService;
+    
     /**
      * 分页查询库房信息
      *
@@ -42,5 +57,40 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
                 put("out", baseMapper.selectStorehouseDetail(name, 2));
             }
         };
+    }
+
+    /**
+     * 任务盘库
+     *
+     * @return 结果
+     */
+    @Override
+    public void diskLibrary() {
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        List<StorehouseInfo> storehouseInfoList = this.list(Wrappers.<StorehouseInfo>lambdaQuery().eq(StorehouseInfo::getTransactionType, 0).lt(StorehouseInfo::getQuantity, 10));
+        storehouseInfoList.forEach(item -> {
+            LinkedHashMap<String, Object> resultItem = new LinkedHashMap<String, Object>() {
+                {
+                    put("materialName", item.getMaterialName());
+                    put("materialType", item.getMaterialType());
+                    put("measurementUnit", item.getMeasurementUnit());
+                    put("unitPrice", item.getUnitPrice());
+                }
+            };
+            if (item.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
+                sb.append("【").append(item.getMaterialName()).append("】库存余量不足，请及时补货");
+            } else {
+                sb.append("【").append(item.getMaterialName()).append("】库存余量不足，当前库存为 ").append(item.getQuantity()).append(item.getMeasurementUnit());
+            }
+            result.add(resultItem);
+        });
+        // 设置盘库记录
+        ReplenishmentInfo replenishment = new ReplenishmentInfo();
+        replenishment.setStatus(0);
+        replenishment.setTaskDate(DateUtil.formatDate(new Date()));
+        replenishment.setContent(sb.toString());
+        replenishment.setReplenishment(JSONUtil.toJsonStr(result));
+        replenishmentInfoService.save(replenishment);
     }
 }

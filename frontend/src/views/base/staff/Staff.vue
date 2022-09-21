@@ -7,10 +7,10 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="人员姓名"
+                label="员工姓名"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-input v-model="queryParams.name"/>
+                <a-input v-model="queryParams.staffName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
@@ -18,7 +18,7 @@
                 label="联系方式"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-input v-model="queryParams.phone"/>
+                <a-input v-model="queryParams.email"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
@@ -26,11 +26,23 @@
                 label="人员类型"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-select v-model="queryParams.type" allowClear>
-                  <a-select-option value="1">物业管理员</a-select-option>
-                  <a-select-option value="2">维修人员</a-select-option>
-                  <a-select-option value="3">抄表员</a-select-option>
-                  <a-select-option value="4">保洁员</a-select-option>
+                <a-select v-model="queryParams.staffType" allowClear>
+                  <a-select-option value="1">售货员</a-select-option>
+                  <a-select-option value="2">理货员</a-select-option>
+                  <a-select-option value="3">收银员</a-select-option>
+                  <a-select-option value="4">分拣员</a-select-option>
+                  <a-select-option value="5">杂工</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item
+                label="员工状态"
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 18, offset: 2}">
+                <a-select v-model="queryParams.staffStatus" allowClear>
+                  <a-select-option value="1">已入职</a-select-option>
+                  <a-select-option value="2">已离职</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -70,7 +82,7 @@
         </template>
         <template slot="contentShow" slot-scope="text, record">
           <template>
-            <a-tooltip>
+            <a-tooltip>s
               <template slot="title">
                 {{ record.content }}
               </template>
@@ -83,39 +95,39 @@
         </template>
       </a-table>
     </div>
-    <worker-add
-      v-if="workerAdd.visiable"
-      @close="handleWorkerAddClose"
-      @success="handleWorkerAddSuccess"
-      :workerAddVisiable="workerAdd.visiable">
-    </worker-add>
-    <worker-edit
-      ref="workerEdit"
-      @close="handleWorkerEditClose"
-      @success="handleWorkerEditSuccess"
-      :workerEditVisiable="workerEdit.visiable">
-    </worker-edit>
+    <staff-add
+      v-if="staffAdd.visiable"
+      @close="handleStaffAddClose"
+      @success="handleStaffAddSuccess"
+      :staffAddVisiable="staffAdd.visiable">
+    </staff-add>
+    <staff-edit
+      ref="staffEdit"
+      @close="handleStaffEditClose"
+      @success="handleStaffEditSuccess"
+      :staffEditVisiable="staffEdit.visiable">
+    </staff-edit>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
-import WorkerAdd from './StaffAdd'
-import WorkerEdit from './StaffEdit'
+import StaffAdd from './StaffAdd'
+import StaffEdit from './StaffEdit'
 import {mapState} from 'vuex'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
-  name: 'Worker',
-  components: {WorkerAdd, WorkerEdit, RangeDate},
+  name: 'Staff',
+  components: {StaffAdd, StaffEdit, RangeDate},
   data () {
     return {
       advanced: false,
-      workerAdd: {
+      staffAdd: {
         visiable: false
       },
-      workerEdit: {
+      staffEdit: {
         visiable: false
       },
       queryParams: {},
@@ -142,43 +154,74 @@ export default {
     }),
     columns () {
       return [{
-        title: '人员姓名',
+        title: '员工编号',
+        dataIndex: 'staffCode'
+      }, {
+        title: '员工姓名',
         dataIndex: 'name'
       }, {
         title: '联系方式',
-        dataIndex: 'phone'
+        dataIndex: 'email'
       }, {
         title: '照片',
         dataIndex: 'image',
         customRender: (text, record, index) => {
-          if (!record.image) return <a-avatar shape="square" icon="user" />
+          if (!record.avatar) return <a-avatar shape="square" icon="user" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.image.split(',')[0] } />
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
             </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.image.split(',')[0] } />
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
           </a-popover>
         }
       }, {
-        title: '人员类型',
-        dataIndex: 'type',
+        title: '员工类型',
+        dataIndex: 'staffType',
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return <a-tag>物业管理员</a-tag>
+              return <a-tag>售货员</a-tag>
             case 2:
-              return <a-tag>维修人员</a-tag>
+              return <a-tag>理货员</a-tag>
             case 3:
-              return <a-tag>抄表员</a-tag>
+              return <a-tag>收银员</a-tag>
             case 4:
-              return <a-tag>保洁员</a-tag>
+              return <a-tag>分拣员</a-tag>
+            case 5:
+              return <a-tag>杂工</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '创建时间',
-        dataIndex: 'createDate',
+        title: '性别',
+        dataIndex: 'staffSex',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return <a-tag>男</a-tag>
+            case 2:
+              return <a-tag>女</a-tag>
+            default:
+              return '- -'
+          }
+        }
+      }, {
+        title: '状态',
+        dataIndex: 'staffStatus',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return <a-tag>已入职</a-tag>
+            case 2:
+              return <a-tag>已离职</a-tag>
+            default:
+              return '- -'
+          }
+        }
+      }, {
+        title: '入职时间',
+        dataIndex: 'onBoardTime',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -187,6 +230,16 @@ export default {
           }
         }
       }, {
+        title: '联系方式',
+        dataIndex: 'email',
+        customRender: (text, row, index) => {
+          if (text !== null) {
+            return text
+          } else {
+            return '- -'
+          }
+        }
+      },{
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: {customRender: 'operation'}
@@ -204,26 +257,26 @@ export default {
       this.advanced = !this.advanced
     },
     add () {
-      this.workerAdd.visiable = true
+      this.staffAdd.visiable = true
     },
-    handleWorkerAddClose () {
-      this.workerAdd.visiable = false
+    handleStaffAddClose () {
+      this.staffAdd.visiable = false
     },
-    handleWorkerAddSuccess () {
-      this.workerAdd.visiable = false
-      this.$message.success('新增工作人员成功')
+    handleStaffAddSuccess () {
+      this.staffAdd.visiable = false
+      this.$message.success('新增员工成功')
       this.search()
     },
     edit (record) {
-      this.$refs.workerEdit.setFormValues(record)
-      this.workerEdit.visiable = true
+      this.$refs.staffEdit.setFormValues(record)
+      this.staffEdit.visiable = true
     },
-    handleWorkerEditClose () {
-      this.workerEdit.visiable = false
+    handleStaffEditClose () {
+      this.staffEdit.visiable = false
     },
-    handleWorkerEditSuccess () {
-      this.workerEdit.visiable = false
-      this.$message.success('修改工作人员成功')
+    handleStaffEditSuccess () {
+      this.staffEdit.visiable = false
+      this.$message.success('修改员工成功')
       this.search()
     },
     handleDeptChange (value) {
@@ -241,7 +294,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/worker-info/' + ids).then(() => {
+          that.$delete('/cos/staff-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -311,10 +364,13 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.type === undefined) {
-        delete params.type
+      if (params.staffType === undefined) {
+        delete params.staffType
       }
-      this.$get('/cos/worker-info/page', {
+      if (params.staffStatus === undefined) {
+        delete params.staffStatus
+      }
+      this.$get('/cos/staff-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

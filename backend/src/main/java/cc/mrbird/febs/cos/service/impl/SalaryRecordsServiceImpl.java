@@ -59,6 +59,7 @@ public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, S
      *
      * @param salaryRecords 员工薪资发放记录
      * @return 结果
+     * @throws Exception 异常
      */
     @Override
     public boolean saveSalaryRecords(SalaryRecords salaryRecords) throws Exception {

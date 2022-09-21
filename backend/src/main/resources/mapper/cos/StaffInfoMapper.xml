@@ -21,6 +21,9 @@
         <if test="staffInfo.staffName != null and staffInfo.staffName != ''">
             and si.staff_name LIKE CONCAT('%',#{staffInfo.staffName},'%')
         </if>
+        <if test="staffInfo.email != null and staffInfo.email != ''">
+            and si.email LIKE CONCAT('%',#{staffInfo.email},'%')
+        </if>
         <if test="staffInfo.staffType != null">
             and si.staff_type = #{staffInfo.staffType}
         </if>

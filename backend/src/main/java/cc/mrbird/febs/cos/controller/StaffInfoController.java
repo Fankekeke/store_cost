@@ -2,8 +2,11 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
+import cc.mrbird.febs.cos.entity.SalaryGain;
 import cc.mrbird.febs.cos.entity.StaffInfo;
+import cc.mrbird.febs.cos.service.ISalaryGainService;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,8 @@ import java.util.List;
 public class StaffInfoController {
 
     private final IStaffInfoService staffInfoService;
+
+    private final ISalaryGainService salaryGainService;
 
     /**
      * 分页查询员工信息
@@ -56,6 +61,14 @@ public class StaffInfoController {
     public R add(StaffInfo staffInfo) {
         // 设置员工编号
         staffInfo.setStaffCode("STAFF-" + System.currentTimeMillis());
+        staffInfo.setOnBoardTime(DateUtil.formatDate(new Date()));
+
+        SalaryGain salaryGain = new SalaryGain();
+        salaryGain.setStaffCode(staffInfo.getStaffCode());
+        salaryGain.setType(0);
+        salaryGain.setCurrentFlag(1);
+        salaryGain.setCreateDate(DateUtil.formatDate(new Date()));
+        salaryGainService.save(salaryGain);
         return R.ok(staffInfoService.save(staffInfo));
     }
 
@@ -81,4 +94,17 @@ public class StaffInfoController {
         return R.ok(staffInfoService.removeByIds(ids));
     }
 
+    /**
+     * 员工离职
+     *
+     * @param staffCode 员工编号
+     * @return 结果
+     */
+    @GetMapping("/resign/{staffCode}")
+    public R resign(@PathVariable("staffCode") String staffCode) {
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffCode, staffCode));
+        staffInfo.setResignTime(DateUtil.formatDate(new Date()));
+        staffInfo.setStaffStatus(2);
+        return R.ok(staffInfoService.updateById(staffInfo));
+    }
 }

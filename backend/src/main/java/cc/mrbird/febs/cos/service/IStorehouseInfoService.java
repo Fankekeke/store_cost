@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -28,5 +29,12 @@ public interface IStorehouseInfoService extends IService<StorehouseInfo> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectStorehouseDetail(String name);
+
+    /**
+     * 任务盘库
+     *
+     * @return 结果
+     */
+    void diskLibrary();
 
 }

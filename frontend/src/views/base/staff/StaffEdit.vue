@@ -81,9 +81,9 @@ const formItemLayout = {
   wrapperCol: { span: 24 }
 }
 export default {
-  name: 'WorkerEdit',
+  name: 'StaffEdit',
   props: {
-    workerEditVisiable: {
+    staffEditVisiable: {
       default: false
     }
   },
@@ -93,7 +93,7 @@ export default {
     }),
     show: {
       get: function () {
-        return this.workerEditVisiable
+        return this.staffEditVisiable
       },
       set: function () {
       }
@@ -133,21 +133,21 @@ export default {
         this.fileList = imageList
       }
     },
-    setFormValues ({...worker}) {
-      this.rowId = worker.id
+    setFormValues ({...staff}) {
+      this.rowId = staff.id
       let fields = ['name', 'phone', 'type']
       let obj = {}
-      Object.keys(worker).forEach((key) => {
+      Object.keys(staff).forEach((key) => {
         if (key === 'images') {
           this.fileList = []
-          this.imagesInit(worker['images'])
+          this.imagesInit(staff['images'])
         }
         if (key === 'type') {
-          worker[key] = worker[key].toString()
+          staff[key] = staff[key].toString()
         }
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
-          obj[key] = worker[key]
+          obj[key] = staff[key]
         }
       })
       this.form.setFieldsValue(obj)
@@ -171,7 +171,7 @@ export default {
         values.image = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$put('/cos/worker-info', {
+          this.$put('/cos/staff-info', {
             ...values
           }).then((r) => {
             this.reset()

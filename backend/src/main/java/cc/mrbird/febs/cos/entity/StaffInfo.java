@@ -1,7 +1,10 @@
 package cc.mrbird.febs.cos.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -78,5 +81,8 @@ public class StaffInfo implements Serializable {
      */
     private String email;
 
+
+    @TableField(exist = false)
+    private BigDecimal salary;
 
 }

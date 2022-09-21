@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增工作人员" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增员工" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -11,36 +11,48 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label='人员姓名' v-bind="formItemLayout">
+          <a-form-item label='员工姓名' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'name',
-            { rules: [{ required: true, message: '请输入人员姓名!' }] }
+            'staffName',
+            { rules: [{ required: true, message: '请输入员工姓名!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item label='联系方式' v-bind="formItemLayout">
             <a-input v-decorator="[
-            'phone',
+            'email',
             { rules: [{ required: true, message: '请输入联系方式!' }] }
             ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='人员类型' v-bind="formItemLayout">
+          <a-form-item label='性别' v-bind="formItemLayout">
             <a-select v-decorator="[
-              'type',
-              { rules: [{ required: true, message: '请输入人员类型!' }] }
+              'staffSex',
+              { rules: [{ required: true, message: '请输入性别!' }] }
               ]">
-              <a-select-option value="1">物业管理员</a-select-option>
-              <a-select-option value="2">维修人员</a-select-option>
-              <a-select-option value="3">抄表员</a-select-option>
-              <a-select-option value="4">保洁员</a-select-option>
+              <a-select-option value="1">男</a-select-option>
+              <a-select-option value="2">女</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item label='员工类型' v-bind="formItemLayout">
+            <a-select v-decorator="[
+              'staffType',
+              { rules: [{ required: true, message: '请输入员工类型!' }] }
+              ]">
+              <a-select-option value="1">售货员</a-select-option>
+              <a-select-option value="2">理货员</a-select-option>
+              <a-select-option value="3">收银员</a-select-option>
+              <a-select-option value="4">分拣员</a-select-option>
+              <a-select-option value="5">杂工</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label='照片' v-bind="formItemLayout">
+          <a-form-item label='员工照片' v-bind="formItemLayout">
             <a-upload
               name="avatar"
               action="http://127.0.0.1:9527/file/fileUpload/"
@@ -81,9 +93,9 @@ const formItemLayout = {
   wrapperCol: { span: 24 }
 }
 export default {
-  name: 'WorkerAdd',
+  name: 'StaffAdd',
   props: {
-    workerAddVisiable: {
+    staffAddVisiable: {
       default: false
     }
   },
@@ -93,7 +105,7 @@ export default {
     }),
     show: {
       get: function () {
-        return this.workerAddVisiable
+        return this.staffAddVisiable
       },
       set: function () {
       }
@@ -138,10 +150,10 @@ export default {
         images.push(image.response)
       })
       this.form.validateFields((err, values) => {
-        values.image = images.length > 0 ? images.join(',') : null
+        values.avatar = images.length > 0 ? images.join(',') : null
         if (!err) {
           this.loading = true
-          this.$post('/cos/worker-info', {
+          this.$post('/cos/staff-info', {
             ...values
           }).then((r) => {
             this.reset()

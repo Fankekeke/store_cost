@@ -123,6 +123,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<String> orderNumberList = orderInfoList.stream().map(OrderInfo::getCode).collect(Collectors.toList());
         List<StorehouseInfo> storehouseInfoList = storehouseInfoService.list(Wrappers.<StorehouseInfo>lambdaQuery().in(StorehouseInfo::getDeliveryOrderNumber, orderNumberList));
         Map<String, List<StorehouseInfo>> materialSalesMap = storehouseInfoList.stream().collect(Collectors.groupingBy(StorehouseInfo::getMaterialName));
+        Map<String, Object> materialSalesMapTop = new HashMap<>();
+        materialSalesMap.forEach((key, value) -> {
+            materialSalesMapTop.put(key, value.stream().map(StorehouseInfo::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add));
+        });
 
         Map<Integer, List<StorehouseInfo>> storeTypeMap = storehouseInfoList.stream().collect(Collectors.groupingBy(StorehouseInfo::getMaterialType));
         // 总订单数量
@@ -134,6 +138,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             {
                 put("allOrderNumber", allOrderNumber);
                 put("allPrice", allPrice);
+                put("materialSalesMapTop", materialSalesMapTop);
             }
         };
         storeTypeMap.forEach((key, value) -> {
