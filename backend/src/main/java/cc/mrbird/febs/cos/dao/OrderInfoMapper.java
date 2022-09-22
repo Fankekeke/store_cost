@@ -40,4 +40,12 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
      */
     List<OrderInfo> selectOrderInfoByDate(@Param("year") String year, @Param("month") String month);
 
+    /**
+     * 七天内订单统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysOrderCount(@Param("materialType") Integer materialType);
+
 }

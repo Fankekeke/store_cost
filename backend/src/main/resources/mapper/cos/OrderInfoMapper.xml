@@ -59,4 +59,30 @@
             AND YEAR(oi.create_time) = #{year}
         </if>
     </select>
+
+    <!-- 七天内订单统计 -->
+    <select id="selectLastSevenDaysOrderCount" resultType="java.util.LinkedHashMap">
+        select
+        date_format(l.create_time, '%m-%d') days,
+        sum(l.quantity) AS quantity,
+        sum(l.totalPrice) AS totalPrice
+        from
+        (
+        select
+        oi.create_time,
+        si.material_type,
+        si.quantity,
+        si.unit_price * si.quantity AS totalPrice
+        from
+        order_info oi
+        LEFT JOIN storehouse_info si ON si.delivery_order_number = oi.code
+        where
+        date_sub(curdate(), interval 7 day) &lt;= date(oi.create_time)
+        ) as l where 1 = 1
+        <if test="materialType != null">
+            and l.material_type = 0
+        </if>
+        group by
+        days
+    </select>
 </mapper>

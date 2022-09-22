@@ -39,4 +39,12 @@ public interface StorageRecordMapper extends BaseMapper<StorageRecord> {
      * @return 结果
      */
     List<StorageRecord> selectStorageRecordByDate(@Param("year") String year, @Param("month") String month);
+
+    /**
+     * 分页查询入库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysInCount(@Param("materialType") Integer materialType);
 }

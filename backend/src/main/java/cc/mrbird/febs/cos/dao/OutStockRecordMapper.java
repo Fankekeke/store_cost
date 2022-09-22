@@ -30,4 +30,12 @@ public interface OutStockRecordMapper extends BaseMapper<OutStockRecord> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> outStockDetail(@Param("code") String code);
+
+    /**
+     * 七天内出库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysOutCount(@Param("materialType") Integer materialType);
 }

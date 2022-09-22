@@ -102,7 +102,18 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
      */
     @Override
     public List<LinkedHashMap<String, Object>> selectMaterialFuzzy(String materialName) {
-        List<StorehouseInfo> storehouseList = this.list(Wrappers.<StorehouseInfo>lambdaQuery().eq(StorehouseInfo::getMaterialType, 0).like(StorehouseInfo::getMaterialName, materialName));
-        return null;
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>();
+        List<StorehouseInfo> storehouseList = this.list(Wrappers.<StorehouseInfo>lambdaQuery().eq(StorehouseInfo::getMaterialType, 0).like(StorehouseInfo::getMaterialName, materialName).last("limit 8"));
+        storehouseList.forEach(item -> {
+            result.add(new LinkedHashMap<String, Object>() {
+                {
+                    put("materialName", item.getMaterialName());
+                    put("materialType", item.getMaterialType());
+                    put("measurementUnit", item.getMeasurementUnit());
+                    put("unitPrice", item.getUnitPrice());
+                }
+            });
+        });
+        return result;
     }
 }

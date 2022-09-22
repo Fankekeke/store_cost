@@ -77,4 +77,30 @@
             AND YEAR(sr.create_date) = #{year}
         </if>
     </select>
+
+    <!-- 分页查询入库统计 -->
+    <select id="selectLastSevenDaysInCount" resultType="java.util.LinkedHashMap">
+        select
+        date_format(l.create_date, '%m-%d') days,
+        sum(l.quantity) AS quantity,
+        sum(l.totalPrice) AS totalPrice
+        from
+        (
+        select
+        sr.create_date,
+        si.material_type,
+        si.quantity,
+        si.unit_price * si.quantity AS totalPrice
+        from
+        storage_record sr
+        LEFT JOIN storehouse_info si ON si.delivery_order_number = sr.code
+        where
+        date_sub(curdate(), interval 7 day) &lt;= date(sr.create_date)
+        ) as l where 1 = 1
+        <if test="materialType != null">
+            and l.material_type = 0
+        </if>
+        group by
+        days
+    </select>
 </mapper>

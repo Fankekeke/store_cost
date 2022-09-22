@@ -48,4 +48,30 @@
         WHERE and osr.code = #{code}
         ORDER BY si.create_date DESC
     </select>
+
+    <!-- 七天内出库统计 -->
+    <select id="selectLastSevenDaysOutCount" resultType="java.util.LinkedHashMap">
+        select
+        date_format(l.create_date, '%m-%d') days,
+        sum(l.quantity) AS quantity,
+        sum(l.totalPrice) AS totalPrice
+        from
+        (
+        select
+        osr.create_date,
+        si.material_type,
+        si.quantity,
+        si.unit_price * si.quantity AS totalPrice
+        from
+        out_stock_record osr
+        LEFT JOIN storehouse_info si ON si.delivery_order_number = osr.code
+        where
+        date_sub(curdate(), interval 7 day) &lt;= date(osr.create_date)
+        ) as l where 1 = 1
+        <if test="materialType != null">
+            and l.material_type = 0
+        </if>
+        group by
+        days
+    </select>
 </mapper>

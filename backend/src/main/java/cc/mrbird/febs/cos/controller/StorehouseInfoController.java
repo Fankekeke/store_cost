@@ -55,4 +55,14 @@ public class StorehouseInfoController {
         return R.ok(storehouseInfoService.removeByIds(ids));
     }
 
+    /**
+     * 远程调用物料信息
+     *
+     * @param materialName 物料名称
+     * @return 结果
+     */
+    @GetMapping("/remote/{materialName}")
+    public R selectMaterialFuzzy(@PathVariable("materialName") String materialName) {
+        return R.ok(storehouseInfoService.selectMaterialFuzzy(materialName));
+    }
 }
