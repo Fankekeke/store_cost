@@ -150,4 +150,15 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         });
         return result;
     }
+
+    /**
+     * 物料类别获取七天内统计信息
+     *
+     * @param materialType 物料类别
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> selectLastSevenDaysCount(String materialType) {
+        return null;
+    }
 }
