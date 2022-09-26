@@ -158,7 +158,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * @return 结果
      */
     @Override
-    public LinkedHashMap<String, Object> selectLastSevenDaysCount(String materialType) {
-        return null;
+    public List<LinkedHashMap<String, Object>> selectLastSevenDaysCount(Integer materialType) {
+        return baseMapper.selectLastSevenDaysOrderCount(materialType);
     }
 }

@@ -86,4 +86,15 @@ public class OutStockRecordServiceImpl extends ServiceImpl<OutStockRecordMapper,
         storehouseInfoService.saveBatch(infoList);
         return this.save(outStockRecord);
     }
+
+    /**
+     * 七天内出库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> selectLastSevenDaysOutCount(Integer materialType) {
+        return baseMapper.selectLastSevenDaysOutCount(materialType);
+    }
 }

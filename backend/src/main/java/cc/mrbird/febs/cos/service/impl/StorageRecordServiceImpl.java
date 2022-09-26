@@ -84,4 +84,15 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
         storehouseInfoService.saveBatch(infoList);
         return this.save(storageRecord);
     }
+
+    /**
+     * 分页查询入库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> selectLastSevenDaysInCount(Integer materialType) {
+        return baseMapper.selectLastSevenDaysInCount(materialType);
+    }
 }

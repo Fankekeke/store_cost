@@ -4,6 +4,7 @@ import cc.mrbird.febs.cos.entity.StorageRecord;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,4 +38,12 @@ public interface IStorageRecordService extends IService<StorageRecord> {
      * @return 结果
      */
     boolean saveStorageRecord(StorageRecord storageRecord);
+
+    /**
+     * 分页查询入库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysInCount(Integer materialType);
 }

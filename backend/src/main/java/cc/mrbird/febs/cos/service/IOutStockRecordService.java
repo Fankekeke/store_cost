@@ -4,6 +4,7 @@ import cc.mrbird.febs.cos.entity.OutStockRecord;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,4 +38,12 @@ public interface IOutStockRecordService extends IService<OutStockRecord> {
      * @return 结果
      */
     boolean saveOutStock(OutStockRecord outStockRecord);
+
+    /**
+     * 七天内出库统计
+     *
+     * @param materialType 物料类型
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysOutCount(Integer materialType);
 }

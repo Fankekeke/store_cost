@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -99,5 +100,17 @@ public class OrderInfoController {
     @GetMapping("statistics/rate")
     public R selectStatisticsByYear(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
         return R.ok(orderInfoService.selectMaterialTypeRate(year, month));
+    }
+
+    /**
+     * 七天内统计
+     *
+     * @param year  年度
+     * @param month 月度
+     * @return 结果
+     */
+    @GetMapping("/seven/count")
+    public R selectLastSevenDaysCount(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
+        return R.ok(new LinkedHashMap<String, Object>());
     }
 }

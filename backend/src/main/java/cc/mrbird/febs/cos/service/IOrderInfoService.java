@@ -63,5 +63,5 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @param materialType 物料类别
      * @return 结果
      */
-    LinkedHashMap<String, Object> selectLastSevenDaysCount(String materialType);
+    List<LinkedHashMap<String, Object>> selectLastSevenDaysCount(Integer materialType);
 }
