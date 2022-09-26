@@ -4,6 +4,8 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
+import cc.mrbird.febs.cos.service.IOutStockRecordService;
+import cc.mrbird.febs.cos.service.IStorageRecordService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,11 @@ import java.util.List;
 public class OrderInfoController {
 
     private final IOrderInfoService orderInfoService;
+
+    private final IOutStockRecordService outStockRecordService;
+
+    private final IStorageRecordService storageRecordService;
+
 
     /**
      * 分页查询订单信息
@@ -105,12 +112,17 @@ public class OrderInfoController {
     /**
      * 七天内统计
      *
-     * @param year  年度
-     * @param month 月度
+     * @param materialType 物料类型
      * @return 结果
      */
     @GetMapping("/seven/count")
-    public R selectLastSevenDaysCount(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
-        return R.ok(new LinkedHashMap<String, Object>());
+    public R selectLastSevenDaysCount(Integer materialType) {
+        return R.ok(new LinkedHashMap<String, Object>() {
+            {
+                put("order", orderInfoService.selectLastSevenDaysCount(materialType));
+                put("out", outStockRecordService.selectLastSevenDaysOutCount(materialType));
+                put("in", storageRecordService.selectLastSevenDaysInCount(materialType));
+            }
+        });
     }
 }
