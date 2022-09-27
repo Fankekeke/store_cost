@@ -91,6 +91,7 @@
           </template>
         </template>
         <template slot="operation" slot-scope="text, record">
+          <a-icon type="bulb" theme="twoTone" twoToneColor="#4a9ff5" @click="view(record)" title="详 情" style="margin-right: 15px"></a-icon>
           <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
         </template>
       </a-table>
@@ -107,6 +108,11 @@
       @success="handleStaffEditSuccess"
       :staffEditVisiable="staffEdit.visiable">
     </staff-edit>
+    <staff-view
+      @close="handleStaffViewClose"
+      :staffShow="staffView.visiable"
+      :staffData="staffView.data">
+    </staff-view>
   </a-card>
 </template>
 
@@ -116,11 +122,12 @@ import StaffAdd from './StaffAdd'
 import StaffEdit from './StaffEdit'
 import {mapState} from 'vuex'
 import moment from 'moment'
+import StaffView from './StaffView'
 moment.locale('zh-cn')
 
 export default {
   name: 'Staff',
-  components: {StaffAdd, StaffEdit, RangeDate},
+  components: {StaffView, StaffAdd, StaffEdit, RangeDate},
   data () {
     return {
       advanced: false,
@@ -129,6 +136,10 @@ export default {
       },
       staffEdit: {
         visiable: false
+      },
+      staffView: {
+        visiable: false,
+        data: null
       },
       queryParams: {},
       filteredInfo: null,
@@ -144,8 +155,7 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
-      },
-      userList: []
+      }
     }
   },
   computed: {
@@ -246,6 +256,10 @@ export default {
     toggleAdvanced () {
       this.advanced = !this.advanced
     },
+    view (record) {
+      this.staffView.visiable = true
+      this.staffView.data = record
+    },
     add () {
       this.staffAdd.visiable = true
     },
@@ -268,6 +282,9 @@ export default {
       this.staffEdit.visiable = false
       this.$message.success('修改员工成功')
       this.search()
+    },
+    handleStaffViewClose () {
+      this.staffView.visiable = false
     },
     handleDeptChange (value) {
       this.queryParams.deptId = value || ''

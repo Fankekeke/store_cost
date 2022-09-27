@@ -8,16 +8,16 @@
             <a-col :md="6" :sm="24">
               <a-form-item
                 label="供应商名称"
-                :labelCol="{span: 4}"
-                :wrapperCol="{span: 18, offset: 2}">
+                :labelCol="{span: 6}"
+                :wrapperCol="{span: 17, offset: 1}">
                 <a-input v-model="queryParams.supplierName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
                 label="可供采购类型"
-                :labelCol="{span: 4}"
-                :wrapperCol="{span: 18, offset: 2}">
+                :labelCol="{span: 6}"
+                :wrapperCol="{span: 17, offset: 1}">
                 <a-select v-model="queryParams.purchaseType" allowClear>
                   <a-select-option value="1">食品生鲜</a-select-option>
                   <a-select-option value="2">家用电器</a-select-option>
@@ -51,11 +51,11 @@
                @change="handleTableChange">
         <template slot="contentShow" slot-scope="text, record">
           <template>
-            <a-tooltip>s
+            <a-tooltip>
               <template slot="title">
-                {{ record.content }}
+                {{ record.remark }}
               </template>
-              {{ record.content.slice(0, 30) }} ...
+              {{ record.remark.slice(0, 30) }} ...
             </a-tooltip>
           </template>
         </template>
@@ -130,16 +130,16 @@ export default {
         dataIndex: 'createDate'
       }, {
         title: '可供采购类型',
-        dataIndex: 'supplierType',
+        dataIndex: 'purchaseType',
         customRender: (text, row, index) => {
           switch (text) {
-            case 1:
+            case '1':
               return <a-tag>食品生鲜</a-tag>
-            case 2:
+            case '2':
               return <a-tag>家用电器</a-tag>
-            case 3:
+            case '3':
               return <a-tag>办公用品</a-tag>
-            case 4:
+            case '4':
               return <a-tag>日常杂货</a-tag>
             default:
               return '- -'
@@ -148,13 +148,7 @@ export default {
       }, {
         title: '备注',
         dataIndex: 'remark',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
+        scopedSlots: { customRender: 'contentShow' }
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -180,7 +174,7 @@ export default {
     },
     handlesupplierAddSuccess () {
       this.supplierAdd.visiable = false
-      this.$message.success('新增员工成功')
+      this.$message.success('新增供应商成功')
       this.search()
     },
     edit (record) {
@@ -192,7 +186,7 @@ export default {
     },
     handlesupplierEditSuccess () {
       this.supplierEdit.visiable = false
-      this.$message.success('修改员工成功')
+      this.$message.success('修改供应商成功')
       this.search()
     },
     handleDeptChange (value) {

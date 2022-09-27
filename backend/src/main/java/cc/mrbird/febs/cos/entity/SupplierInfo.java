@@ -45,7 +45,7 @@ public class SupplierInfo implements Serializable {
     /**
      * 可供采购类型（1.食品生鲜 2.家用电器 3.办公用品 4.日常杂货）
      */
-    private String purchaseType;
+    private Integer purchaseType;
 
 
 }

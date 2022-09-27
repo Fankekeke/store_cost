@@ -5,7 +5,7 @@
         关闭
       </a-button>
     </template>
-    <div style="font-size: 13px" v-if="staffData !== null">
+    <div style="font-size: 13px;font-family: SimHei" v-if="staffData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
         <a-col :span="8"><b>员工姓名：</b>

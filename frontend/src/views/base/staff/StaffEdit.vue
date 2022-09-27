@@ -165,9 +165,6 @@ export default {
           this.fileList = []
           this.imagesInit(staff['avatar'])
         }
-        if (key === 'birthDate' && staff[key]) {
-          this.form.setFieldsValue({'birthDate': moment(staff[key])})
-        }
         if (key === 'staffSex') {
           staff[key] = staff[key].toString()
         }
@@ -180,6 +177,11 @@ export default {
         }
       })
       this.form.setFieldsValue(obj)
+      setTimeout(() => {
+        if (staff['birthDate']) {
+          this.form.setFieldsValue({'birthDate': moment(staff['birthDate'])})
+        }
+      }, 200)
     },
     reset () {
       this.loading = false
