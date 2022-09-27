@@ -38,4 +38,5 @@ public interface IReplenishmentInfoService extends IService<ReplenishmentInfo> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> selectReplenishmentInventory(Integer id) throws Exception;
+
 }
