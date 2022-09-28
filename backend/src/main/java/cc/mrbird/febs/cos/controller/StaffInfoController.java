@@ -109,4 +109,14 @@ public class StaffInfoController {
         staffInfo.setStaffStatus(2);
         return R.ok(staffInfoService.updateById(staffInfo));
     }
+
+    /**
+     * 所有员工信息
+     *
+     * @return 结果
+     */
+    @GetMapping("/list")
+    public R list() {
+        return R.ok(staffInfoService.list(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffStatus, 0)));
+    }
 }
