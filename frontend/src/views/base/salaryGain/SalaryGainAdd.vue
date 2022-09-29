@@ -11,18 +11,10 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="8">
-          <a-form-item label='员工姓名' v-bind="formItemLayout">
+          <a-form-item label='选择员工' v-bind="formItemLayout">
             <a-input v-decorator="[
             'salaryGainName',
-            { rules: [{ required: true, message: '请输入员工姓名!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label='联系方式' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'email',
-            { rules: [{ required: true, message: '请输入联系方式!' }] }
+            { rules: [{ required: true, message: '请输入员工!' }] }
             ]"/>
           </a-form-item>
         </a-col>
@@ -38,25 +30,6 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label='员工类型' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'salaryGainType',
-              { rules: [{ required: true, message: '请输入员工类型!' }] }
-              ]">
-              <a-select-option value="1">售货员</a-select-option>
-              <a-select-option value="2">理货员</a-select-option>
-              <a-select-option value="3">收银员</a-select-option>
-              <a-select-option value="4">分拣员</a-select-option>
-              <a-select-option value="5">杂工</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="出生日期">
-            <a-date-picker style="width: 100%" v-decorator="['birthDate',{rules: [{ required: true, message: '出生日期' }]}]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
           <a-form-item label="试用薪资">
             <a-input-number style="width: 100%" v-decorator="[
               'salary', { rules: [{ required: true, message: '请填写试用薪资!' }] }
@@ -67,28 +40,6 @@
         <a-col :span="24">
           <a-form-item label="备注">
             <a-textarea placeholder="Basic usage" :rows="4" v-decorator="['remark']"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="24">
-          <a-form-item label='员工照片' v-bind="formItemLayout">
-            <a-upload
-              name="avatar"
-              action="http://127.0.0.1:9527/file/fileUpload/"
-              list-type="picture-card"
-              :file-list="fileList"
-              @preview="handlePreview"
-              @change="picHandleChange"
-            >
-              <div v-if="fileList.length < 2">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">
-                  Upload
-                </div>
-              </div>
-            </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
           </a-form-item>
         </a-col>
       </a-row>
