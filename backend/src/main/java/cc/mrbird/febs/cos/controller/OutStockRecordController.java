@@ -34,6 +34,17 @@ public class OutStockRecordController {
     }
 
     /**
+     * 出库信息导出
+     *
+     * @param code 出库单号
+     * @return 结果
+     */
+    @GetMapping("/export/{code}")
+    public R export(@PathVariable("code") String code) throws Exception {
+        return R.ok(outStockRecordService.export(code));
+    }
+
+    /**
      * 查询出库记录详情
      *
      * @param code 出库单号
@@ -41,7 +52,7 @@ public class OutStockRecordController {
      */
     @GetMapping("/{code}")
     public R detail(@PathVariable("code") String code) {
-        return R.ok();
+        return R.ok(outStockRecordService.outStockDetail(code));
     }
 
     /**
@@ -52,7 +63,7 @@ public class OutStockRecordController {
      */
     @PostMapping
     public R add(OutStockRecord outStockRecord) {
-        return R.ok();
+        return R.ok(outStockRecordService.saveOutStock(outStockRecord));
     }
 
     /**

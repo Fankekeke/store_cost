@@ -1,5 +1,6 @@
 package cc.mrbird.febs.cos.service.impl;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.cos.dao.SalaryRecordsMapper;
 import cc.mrbird.febs.cos.dao.StorageRecordMapper;
 import cc.mrbird.febs.cos.entity.OrderInfo;
@@ -13,6 +14,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -49,6 +51,33 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Override
     public IPage<LinkedHashMap<String, Object>> selectOrderPage(Page<OrderInfo> page, OrderInfo orderInfo) {
         return baseMapper.selectOrderPage(page, orderInfo);
+    }
+
+    /**
+     * 订单详情导出
+     *
+     * @param code 订单编号
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @Override
+    public LinkedHashMap<String, Object> export(String code) throws Exception {
+        if (StrUtil.isEmpty(code)) {
+            throw new FebsException("订单编号不能为空！");
+        }
+        List<LinkedHashMap<String, Object>> materialMapList = baseMapper.orderDetail(code);
+        if (CollectionUtil.isEmpty(materialMapList)) {
+            throw new FebsException(("订单信息为空！"));
+        }
+        List<StorehouseInfo> materialList = JSONUtil.toList(JSONUtil.toJsonStr(materialMapList), StorehouseInfo.class);
+        BigDecimal totalPrice = materialList.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        return new LinkedHashMap<String, Object>() {
+            {
+                put("materialMapList", materialMapList);
+                put("totalPrice", totalPrice);
+                put("orderDetail", baseMapper.selectOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, code)));
+            }
+        };
     }
 
     /**

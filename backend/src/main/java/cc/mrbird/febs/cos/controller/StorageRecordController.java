@@ -34,6 +34,18 @@ public class StorageRecordController {
     }
 
     /**
+     * 入库记录导出
+     *
+     * @param code 入库单号
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @GetMapping("/export/{code}")
+    public R export(@PathVariable("code") String code) throws Exception {
+        return R.ok(storageRecordService.export(code));
+    }
+
+    /**
      * 入库记录详情
      *
      * @param code 入库单号
@@ -41,7 +53,7 @@ public class StorageRecordController {
      */
     @GetMapping("/{code}")
     public R detail(@PathVariable("code") String code) {
-        return R.ok();
+        return R.ok(storageRecordService.storageRecordDetail(code));
     }
 
     /**
@@ -52,7 +64,7 @@ public class StorageRecordController {
      */
     @PostMapping
     public R add(StorageRecord storageRecord) {
-        return R.ok();
+        return R.ok(storageRecordService.saveStorageRecord(storageRecord));
     }
 
     /**

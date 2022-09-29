@@ -23,6 +23,25 @@ public interface ISalaryRecordsService extends IService<SalaryRecords> {
     IPage<LinkedHashMap<String, Object>> selectSalaryRecordsPage(Page<SalaryRecords> page, SalaryRecords salaryRecords);
 
     /**
+     * 导出员工薪资发放记录
+     *
+     * @param year  年度
+     * @param month 月度
+     * @return 结果
+     * @throws Exception 异常
+     */
+    LinkedHashMap<String, Object> export(String year, String month) throws Exception;
+
+    /**
+     * 导出员工薪资发放
+     *
+     * @param id  xx
+     * @return 结果
+     * @throws Exception 异常
+     */
+    LinkedHashMap<String, Object> exportByStaff(Integer id) throws Exception;
+
+    /**
      * 查询薪资发放详情
      *
      * @param recordId 薪资发放ID

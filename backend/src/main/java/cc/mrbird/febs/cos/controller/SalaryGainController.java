@@ -4,11 +4,13 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.SalaryGain;
 import cc.mrbird.febs.cos.service.ISalaryGainService;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class SalaryGainController {
      */
     @GetMapping("/{code}")
     public R detail(@PathVariable("code") String code) {
-        return R.ok();
+        return R.ok(salaryGainService.salaryDetail(code));
     }
 
     /**
@@ -52,7 +54,7 @@ public class SalaryGainController {
      */
     @PostMapping
     public R add(SalaryGain salaryGain) {
-        return R.ok();
+        return R.ok(salaryGainService.saveSalaryGain(salaryGain));
     }
 
     /**

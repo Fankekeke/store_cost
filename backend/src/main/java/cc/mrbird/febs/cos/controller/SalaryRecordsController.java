@@ -34,6 +34,31 @@ public class SalaryRecordsController {
     }
 
     /**
+     * 导出员工薪资发放记录
+     *
+     * @param year  年度
+     * @param month 月度
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @GetMapping("/export")
+    public R export(String year, String month) throws Exception {
+        return R.ok(salaryRecordsService.export(year, month));
+    }
+
+    /**
+     * 导出员工薪资发放
+     *
+     * @param id  xx
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @GetMapping("/export/staff/{id}")
+    public R exportByStaff(@PathVariable("id") Integer id) throws Exception {
+        return R.ok(salaryRecordsService.exportByStaff(id));
+    }
+
+    /**
      * 根据员工编号获取薪资发放记录
      *
      * @param staffCode 员工编号
@@ -44,6 +69,7 @@ public class SalaryRecordsController {
     public R selectSalaryRecordsByStaff(String staffCode, String year) {
         return R.ok(salaryRecordsService.selectSalaryRecordsByStaff(staffCode, year));
     }
+
     /**
      * 查询薪资发放详情
      *

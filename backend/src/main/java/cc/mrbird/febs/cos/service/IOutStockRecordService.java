@@ -24,6 +24,13 @@ public interface IOutStockRecordService extends IService<OutStockRecord> {
     IPage<LinkedHashMap<String, Object>> selectOutStockRecordPage(Page<OutStockRecord> page, OutStockRecord outStockRecord);
 
     /**
+     * 出库信息导出
+     *
+     * @param code 出库单号
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> export(String code) throws Exception;
+    /**
      * 查询出库记录详情
      *
      * @param code 出库单号

@@ -42,6 +42,18 @@ public class OrderInfoController {
     }
 
     /**
+     * 订单详情导出
+     *
+     * @param code 订单编号
+     * @return 结果
+     * @throws Exception 异常
+     */
+    @GetMapping("/export/{code}")
+    public R export(@PathVariable("code") String code) throws Exception {
+        return R.ok(orderInfoService.export(code));
+    }
+
+    /**
      * 查询订单详情
      *
      * @param code 订单编号

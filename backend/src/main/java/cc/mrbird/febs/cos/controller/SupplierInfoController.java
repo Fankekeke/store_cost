@@ -4,6 +4,7 @@ import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.SupplierInfo;
 import cc.mrbird.febs.cos.service.ISupplierInfoService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class SupplierInfoController {
     @GetMapping("/page")
     public R page(Page<SupplierInfo> page, SupplierInfo supplierInfo) {
         return R.ok(supplierInfoService.selectSupplierPage(page, supplierInfo));
+    }
+
+    /**
+     * 获取所有供应商信息
+     *
+     * @return 结果
+     */
+    @GetMapping("/list/{materialType}")
+    public R list(@PathVariable(value = "materialType", required = false) Integer materialType) {
+        return R.ok(supplierInfoService.list(Wrappers.<SupplierInfo>lambdaQuery().eq(materialType != null, SupplierInfo::getPurchaseType, materialType)));
     }
 
     /**

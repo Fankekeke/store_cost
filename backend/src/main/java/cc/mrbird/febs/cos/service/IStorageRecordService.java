@@ -24,6 +24,15 @@ public interface IStorageRecordService extends IService<StorageRecord> {
     IPage<LinkedHashMap<String, Object>> selectStorageRecordPage(Page<StorageRecord> page, StorageRecord storageRecord);
 
     /**
+     * 入库记录导出
+     *
+     * @param code 入库单号
+     * @return 结果
+     * @throws Exception 异常
+     */
+    LinkedHashMap<String, Object> export(String code) throws Exception;
+
+    /**
      * 入库记录详情
      *
      * @param code 入库单号
