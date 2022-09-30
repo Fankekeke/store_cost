@@ -117,6 +117,6 @@ public class StaffInfoController {
      */
     @GetMapping("/list")
     public R list() {
-        return R.ok(staffInfoService.list(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffStatus, 0)));
+        return R.ok(staffInfoService.list(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffStatus, 1)));
     }
 }

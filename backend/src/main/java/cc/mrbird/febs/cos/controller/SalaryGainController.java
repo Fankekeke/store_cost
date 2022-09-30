@@ -5,11 +5,13 @@ import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.SalaryGain;
 import cc.mrbird.febs.cos.service.ISalaryGainService;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +35,18 @@ public class SalaryGainController {
     @GetMapping("/page")
     public R page(Page<SalaryGain> page, SalaryGain salaryGain) {
         return R.ok(salaryGainService.selectSalaryPage(page, salaryGain));
+    }
+
+    /**
+     * 根据员工编号获取当前员工薪资情况
+     *
+     * @param staffCode 员工编号
+     * @return 结果
+     */
+    @GetMapping("/gain/{staffCode}")
+    public R getGainByStaffCode(@PathVariable("staffCode") String staffCode) {
+        SalaryGain salaryGain = salaryGainService.getOne(Wrappers.<SalaryGain>lambdaQuery().eq(SalaryGain::getStaffCode, staffCode).eq(SalaryGain::getCurrentFlag, 1));
+        return R.ok(salaryGain != null ? salaryGain.getSalary() : BigDecimal.ZERO);
     }
 
     /**

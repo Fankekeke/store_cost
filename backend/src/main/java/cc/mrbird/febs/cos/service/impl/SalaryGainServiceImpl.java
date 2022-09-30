@@ -60,7 +60,7 @@ public class SalaryGainServiceImpl extends ServiceImpl<SalaryGainMapper, SalaryG
         salaryGain.setType(1);
         SalaryGain lastSalaryGain = this.getOne(Wrappers.<SalaryGain>lambdaQuery().eq(SalaryGain::getStaffCode, salaryGain.getStaffCode()).eq(SalaryGain::getCurrentFlag, 1));
         if (lastSalaryGain != null) {
-            salaryGain.setType(lastSalaryGain.getSalary().compareTo(salaryGain.getSalary()) > 0 ? 1 : 2);
+            salaryGain.setType(salaryGain.getSalary().compareTo(lastSalaryGain.getSalary()) > 0 ? 1 : 2);
         }
         // 设置为当前薪资
         salaryGain.setCurrentFlag(1);

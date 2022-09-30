@@ -10,22 +10,28 @@
     </template>
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
-        <a-col :span="8">
+        <a-col :span="16">
           <a-form-item label='选择员工' v-bind="formItemLayout">
-            <a-input v-decorator="[
-            'salaryGainName',
-            { rules: [{ required: true, message: '请输入员工!' }] }
-            ]"/>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label='性别' v-bind="formItemLayout">
-            <a-select v-decorator="[
-              'salaryGainSex',
-              { rules: [{ required: true, message: '请输入性别!' }] }
-              ]">
-              <a-select-option value="1">男</a-select-option>
-              <a-select-option value="2">女</a-select-option>
+            <a-select style="width: 100%" v-model="staffInfo" @change="staffChange" option-label-prop="label">
+              <a-select-option v-for="(item, index) in staffList" :key="index" :value="item.id" :label="item.staffName">
+                <a-row>
+                  <a-col :span="4">
+                    <a-avatar style="margin-right: 20px" shape="square" :size="40" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + item.avatar" />
+                  </a-col>
+                  <a-col :span="20">
+                    <a-row>
+                      <a-col><span>{{item.staffName}}</span></a-col>
+                      <a-col style="font-size: 10px">
+                        <span v-if="item.staffType === 1">售货员</span>
+                        <span v-if="item.staffType === 2">理货员</span>
+                        <span v-if="item.staffType === 3">收银员</span>
+                        <span v-if="item.staffType === 4">分拣员</span>
+                        <span v-if="item.staffType === 5">杂工</span>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </a-row>
+              </a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -49,7 +55,6 @@
 
 <script>
 import {mapState} from 'vuex'
-import moment from 'moment'
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -88,10 +93,42 @@ export default {
       loading: false,
       fileList: [],
       previewVisible: false,
-      previewImage: ''
+      previewImage: '',
+      staffList: [],
+      staffInfo: null,
+      staffCode: '',
+      gain: 0
+    }
+  },
+  mounted () {
+    this.getStaffList()
+  },
+  watch: {
+    staffCode: function (value) {
+      if (this.staffCode) {
+        this.getGainByStaffCode(this.staffCode)
+      }
     }
   },
   methods: {
+    staffChange (value) {
+      this.staffList.forEach(item => {
+        if (item.id === value) {
+          this.staffCode = item.staffCode
+        }
+      })
+    },
+    getStaffList () {
+      this.$get('/cos/staff-info/list').then((r) => {
+        this.staffList = r.data.data
+      })
+    },
+    getGainByStaffCode (staffCode) {
+      this.$get(`/cos/salary-gain/gain/${staffCode}`).then((r) => {
+        this.gain = r.data.data
+        this.form.setFieldsValue({'salary': this.gain})
+      })
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -114,18 +151,13 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      // 获取图片List
-      let images = []
-      this.fileList.forEach(image => {
-        images.push(image.response)
-      })
+      if (!this.staffInfo) {
+        this.$message.error('请选择员工！')
+      }
       this.form.validateFields((err, values) => {
-        values.avatar = images.length > 0 ? images.join(',') : null
-        if (values.birthDate) {
-          values.birthDate = moment(values.birthDate).format('YYYY-MM-DD')
-        }
         if (!err) {
           this.loading = true
+          values.staffCode = this.staffCode
           this.$post('/cos/salary-gain', {
             ...values
           }).then((r) => {
