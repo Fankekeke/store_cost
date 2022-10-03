@@ -34,7 +34,7 @@
         sg.create_date  AS createDate,
         sg.type
         FROM salary_gain sg
-        WHERE 1 = 1 sg.staff_code = #{staffCode}
+        WHERE 1 = 1 AND sg.staff_code = #{staffCode}
         ORDER BY sg.create_date ASC
     </select>
 </mapper>

@@ -7,23 +7,30 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="员工姓名"
+                label="物料名称"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-input v-model="queryParams.staffName"/>
+                <a-input v-model="queryParams.materialName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="人员类型"
+                label="型号"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-select v-model="queryParams.staffType" allowClear>
-                  <a-select-option value="1">售货员</a-select-option>
-                  <a-select-option value="2">理货员</a-select-option>
-                  <a-select-option value="3">收银员</a-select-option>
-                  <a-select-option value="4">分拣员</a-select-option>
-                  <a-select-option value="5">杂工</a-select-option>
+                <a-input v-model="queryParams.model"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item
+                label="物料类型"
+                :labelCol="{span: 4}"
+                :wrapperCol="{span: 18, offset: 2}">
+                <a-select v-model="queryParams.materialType" allowClear>
+                  <a-select-option value="1">食品生鲜</a-select-option>
+                  <a-select-option value="2">家用电器</a-select-option>
+                  <a-select-option value="3">办公用品</a-select-option>
+                  <a-select-option value="4">日常杂货</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -37,7 +44,6 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add">新增</a-button>
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -76,41 +82,34 @@
         </template>
       </a-table>
     </div>
-    <salaryGain-add
-      v-if="salaryGainAdd.visiable"
-      @close="handlesalaryGainAddClose"
-      @success="handlesalaryGainAddSuccess"
-      :salaryGainAddVisiable="salaryGainAdd.visiable">
-    </salaryGain-add>
-    <salaryGain-view
-      @close="handlesalaryGainViewClose"
-      :salaryGainShow="salaryGainView.visiable"
-      :salaryGainData="salaryGainView.data">
-    </salaryGain-view>
+    <storehouse-view
+      @close="handlestorehouseViewClose"
+      :storehouseShow="storehouseView.visiable"
+      :storehouseData="storehouseView.data">
+    </storehouse-view>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
-import salaryGainAdd from './SalaryGainAdd'
 import {mapState} from 'vuex'
 import moment from 'moment'
-import salaryGainView from './SalaryGainView'
+import storehouseView from './StorehouseView'
 moment.locale('zh-cn')
 
 export default {
-  name: 'salaryGain',
-  components: {salaryGainView, salaryGainAdd, RangeDate},
+  name: 'storehouse',
+  components: {storehouseView, RangeDate},
   data () {
     return {
       advanced: false,
-      salaryGainAdd: {
+      storehouseAdd: {
         visiable: false
       },
-      salaryGainEdit: {
+      storehouseEdit: {
         visiable: false
       },
-      salaryGainView: {
+      storehouseView: {
         visiable: false,
         data: null
       },
@@ -137,82 +136,42 @@ export default {
     }),
     columns () {
       return [{
-        title: '员工编号',
-        dataIndex: 'staffCode'
+        title: '物料名称',
+        dataIndex: 'materialName'
       }, {
-        title: '员工姓名',
-        dataIndex: 'staffName'
-      }, {
-        title: '照片',
-        dataIndex: 'image',
-        customRender: (text, record, index) => {
-          if (!record.avatar) return <a-avatar shape="square" icon="user" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
-            </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.avatar } />
-          </a-popover>
-        }
-      }, {
-        title: '员工类型',
-        dataIndex: 'staffType',
+        title: '物料类型',
+        dataIndex: 'materialType',
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return <a-tag>售货员</a-tag>
+              return <a-tag>食品生鲜</a-tag>
             case 2:
-              return <a-tag>理货员</a-tag>
+              return <a-tag>家用电器</a-tag>
             case 3:
-              return <a-tag>收银员</a-tag>
+              return <a-tag>办公用品</a-tag>
             case 4:
-              return <a-tag>分拣员</a-tag>
-            case 5:
-              return <a-tag>杂工</a-tag>
+              return <a-tag>日常杂货</a-tag>
             default:
               return '- -'
           }
         }
       }, {
-        title: '涨幅类型',
-        dataIndex: 'type',
+        title: '型号',
+        dataIndex: 'model'
+      }, {
+        title: '当前库存',
+        dataIndex: 'quantity',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return <a-tag>初始薪资</a-tag>
-            case 1:
-              return <a-tag>上涨</a-tag>
-            case 2:
-              return <a-tag>跌幅</a-tag>
-            default:
-              return '- -'
-          }
+          return text + row.measurementUnit
         }
       }, {
-        title: '是否当前薪资',
-        dataIndex: 'currentFlag',
+        title: '单价',
+        dataIndex: 'unitPrice',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return <a-tag color="red">否</a-tag>
-            case 1:
-              return <a-tag color="blue">是</a-tag>
-            default:
-              return '- -'
-          }
+          return text + '元'
         }
       }, {
-        title: '涨幅薪资',
-        dataIndex: 'salary',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return '￥' + text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '涨幅时间',
+        title: '操作时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -239,34 +198,34 @@ export default {
       this.advanced = !this.advanced
     },
     view (record) {
-      this.salaryGainView.visiable = true
-      this.salaryGainView.data = record
+      this.storehouseView.visiable = true
+      this.storehouseView.data = record
     },
     add () {
-      this.salaryGainAdd.visiable = true
+      this.storehouseAdd.visiable = true
     },
-    handlesalaryGainAddClose () {
-      this.salaryGainAdd.visiable = false
+    handlestorehouseAddClose () {
+      this.storehouseAdd.visiable = false
     },
-    handlesalaryGainAddSuccess () {
-      this.salaryGainAdd.visiable = false
-      this.$message.success('更新薪资成功')
+    handlestorehouseAddSuccess () {
+      this.storehouseAdd.visiable = false
+      this.$message.success('更新成功')
       this.search()
     },
     edit (record) {
-      this.$refs.salaryGainEdit.setFormValues(record)
-      this.salaryGainEdit.visiable = true
+      this.$refs.storehouseEdit.setFormValues(record)
+      this.storehouseEdit.visiable = true
     },
-    handlesalaryGainEditClose () {
-      this.salaryGainEdit.visiable = false
+    handlestorehouseEditClose () {
+      this.storehouseEdit.visiable = false
     },
-    handlesalaryGainEditSuccess () {
-      this.salaryGainEdit.visiable = false
-      this.$message.success('修改薪资成功')
+    handlestorehouseEditSuccess () {
+      this.storehouseEdit.visiable = false
+      this.$message.success('修改成功')
       this.search()
     },
-    handlesalaryGainViewClose () {
-      this.salaryGainView.visiable = false
+    handlestorehouseViewClose () {
+      this.storehouseView.visiable = false
     },
     handleDeptChange (value) {
       this.queryParams.deptId = value || ''
@@ -283,7 +242,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/salary-gain/' + ids).then(() => {
+          that.$delete('/cos/storehouse-info/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -353,10 +312,10 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      if (params.staffType === undefined) {
-        delete params.staffType
+      if (params.materialType === undefined) {
+        delete params.materialType
       }
-      this.$get('/cos/salary-gain/page', {
+      this.$get('/cos/storehouse-info/page', {
         ...params
       }).then((r) => {
         let data = r.data.data

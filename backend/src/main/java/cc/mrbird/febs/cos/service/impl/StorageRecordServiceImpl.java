@@ -6,8 +6,10 @@ import cc.mrbird.febs.cos.dao.StorageRecordMapper;
 import cc.mrbird.febs.cos.entity.StorehouseInfo;
 import cc.mrbird.febs.cos.service.IStorageRecordService;
 import cc.mrbird.febs.cos.service.IStorehouseInfoService;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -94,25 +93,39 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
     public boolean saveStorageRecord(StorageRecord storageRecord) {
         // 设置入库单号
         storageRecord.setCode("IN-"+System.currentTimeMillis());
-        List<StorehouseInfo> infoList = Convert.toList(StorehouseInfo.class, storageRecord.getMaterial());
+        List<StorehouseInfo> infoList = JSONUtil.toList(storageRecord.getMaterial(), StorehouseInfo.class);
         // 获取物料库存
         List<String> materialNameList = infoList.stream().map(StorehouseInfo::getMaterialName).distinct().collect(Collectors.toList());
         List<StorehouseInfo> storehouseInfoList = storehouseInfoService.list(Wrappers.<StorehouseInfo>lambdaQuery().in(StorehouseInfo::getMaterialName, materialNameList).eq(StorehouseInfo::getTransactionType, 0));
         // 库存信息转MAP
         Map<String, StorehouseInfo> storehouseInfoMap = storehouseInfoList.stream().collect(Collectors.toMap(StorehouseInfo::getMaterialName, e -> e));
         List<StorehouseInfo> inStockList = new ArrayList<>();
+        List<StorehouseInfo> putStockList = new ArrayList<>();
+        storageRecord.setCreateDate(DateUtil.formatDateTime(new Date()));
+        // 总价格
+        BigDecimal totalPrice = infoList.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        storageRecord.setTotalPrice(totalPrice);
         infoList.forEach(material -> {
             // 出库单号
             material.setDeliveryOrderNumber(storageRecord.getCode());
+            StorehouseInfo stockItem = storehouseInfoMap.get(material.getMaterialName());
             // 库房类型
             material.setTransactionType(1);
-            StorehouseInfo stockItem = storehouseInfoMap.get(material.getMaterialName());
+            material.setCreateDate(DateUtil.formatDateTime(new Date()));
             if (stockItem != null) {
                 stockItem.setQuantity(stockItem.getQuantity().add(material.getQuantity()));
+                stockItem.setCreateDate(DateUtil.formatDateTime(new Date()));
                 inStockList.add(stockItem);
+            } else {
+                stockItem = BeanUtil.copyProperties(material, StorehouseInfo.class);
+                stockItem.setTransactionType(0);
+                putStockList.add(stockItem);
             }
         });
         storehouseInfoService.updateBatchById(inStockList);
+        if (CollectionUtil.isNotEmpty(putStockList)) {
+            infoList.addAll(putStockList);
+        }
         storehouseInfoService.saveBatch(infoList);
         return this.save(storageRecord);
     }

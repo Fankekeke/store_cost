@@ -42,7 +42,7 @@ public class SupplierInfoController {
      */
     @GetMapping("/list/{materialType}")
     public R list(@PathVariable(value = "materialType", required = false) Integer materialType) {
-        return R.ok(supplierInfoService.list(Wrappers.<SupplierInfo>lambdaQuery().eq(materialType != null, SupplierInfo::getPurchaseType, materialType)));
+        return R.ok(supplierInfoService.list(Wrappers.<SupplierInfo>lambdaQuery().eq(materialType != -1, SupplierInfo::getPurchaseType, materialType)));
     }
 
     /**

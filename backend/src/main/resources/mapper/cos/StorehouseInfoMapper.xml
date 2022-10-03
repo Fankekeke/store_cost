@@ -17,7 +17,7 @@
         si.inbound_order_number AS inboundOrderNumber,
         si.delivery_order_number AS deliveryOrderNumber
         FROM storehouse_info si
-        WHERE si.transactionType = 0
+        WHERE si.transaction_type = 0
         <if test="storehouseInfo.materialName != null and storehouseInfo.materialName != ''">
             and si.material_name LIKE CONCAT('%',#{storehouseInfo.materialName},'%')
         </if>
