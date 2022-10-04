@@ -13,7 +13,7 @@
         si1.staff_name AS handlerName,
         si2.staff_name AS custodianName,
         si1.avatar AS handlerAvatar,
-        si2.avatar AS custodianAvatar,
+        si2.avatar AS custodianAvatar
         FROM out_stock_record osr
         LEFT JOIN staff_info si1 on osr.handler_code = si1.staff_code
         LEFT JOIN staff_info si2 on osr.custodian_code = si2.staff_code
@@ -45,7 +45,7 @@
         FROM storehouse_info si
         LEFT JOIN out_stock_record osr
         on osr.code = si.delivery_order_number
-        WHERE and osr.code = #{code}
+        WHERE 1 = 1 and osr.code = #{code}
         ORDER BY si.create_date DESC
     </select>
 

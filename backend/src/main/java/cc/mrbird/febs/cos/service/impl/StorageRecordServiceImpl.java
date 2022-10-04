@@ -106,8 +106,8 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
         BigDecimal totalPrice = infoList.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
         storageRecord.setTotalPrice(totalPrice);
         infoList.forEach(material -> {
-            // 出库单号
-            material.setDeliveryOrderNumber(storageRecord.getCode());
+            // 入库单号
+            material.setInboundOrderNumber(storageRecord.getCode());
             StorehouseInfo stockItem = storehouseInfoMap.get(material.getMaterialName());
             // 库房类型
             material.setTransactionType(1);
@@ -118,6 +118,7 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
                 inStockList.add(stockItem);
             } else {
                 stockItem = BeanUtil.copyProperties(material, StorehouseInfo.class);
+                stockItem.setInboundOrderNumber(null);
                 stockItem.setTransactionType(0);
                 putStockList.add(stockItem);
             }

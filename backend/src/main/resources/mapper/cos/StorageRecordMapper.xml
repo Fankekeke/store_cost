@@ -52,7 +52,7 @@
         FROM storehouse_info si
         LEFT JOIN storage_record sr
         on sr.code = si.inbound_order_number
-        WHERE and sr.code = #{code}
+        WHERE 1 = 1 and sr.code = #{code}
         ORDER BY si.create_date DESC
     </select>
 

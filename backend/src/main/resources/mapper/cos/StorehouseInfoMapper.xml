@@ -35,6 +35,9 @@
         SELECT si.id,
         si.material_name AS materialName,
         si.measurement_unit AS measurementUnit,
+        si.model,
+        si.material_type AS materialType,
+        si.unit_price AS unitPrice,
         si.quantity,
         <if test="transactionType != null and transactionType == 1">
             si.inbound_order_number AS orderNumber,

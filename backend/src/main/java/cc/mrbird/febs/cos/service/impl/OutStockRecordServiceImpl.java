@@ -8,6 +8,7 @@ import cc.mrbird.febs.cos.service.IOutStockRecordService;
 import cc.mrbird.febs.cos.service.IStorehouseInfoService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +93,8 @@ public class OutStockRecordServiceImpl extends ServiceImpl<OutStockRecordMapper,
     public boolean saveOutStock(OutStockRecord outStockRecord) {
         // 设置出库编号
         outStockRecord.setCode("OUT-" + System.currentTimeMillis());
-        List<StorehouseInfo> infoList = Convert.toList(StorehouseInfo.class, outStockRecord.getMaterial());
+        List<StorehouseInfo> infoList = JSONUtil.toList(outStockRecord.getMaterial(), StorehouseInfo.class);
+        outStockRecord.setCreateDate(DateUtil.formatDateTime(new Date()));
         // 获取物料库存
         List<String> materialNameList = infoList.stream().map(StorehouseInfo::getMaterialName).distinct().collect(Collectors.toList());
         List<StorehouseInfo> storehouseInfoList = storehouseInfoService.list(Wrappers.<StorehouseInfo>lambdaQuery().in(StorehouseInfo::getMaterialName, materialNameList).eq(StorehouseInfo::getTransactionType, 0));

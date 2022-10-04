@@ -78,12 +78,6 @@
           <a-icon type="download" @click="downLoad(record)" title="下 载"></a-icon>
         </template>
       </a-table>
-      <request-add
-        v-if="requestAdd.visiable"
-        @close="handleRequestAddClose"
-        @success="handleRequestAddSuccess"
-        :requestAddVisiable="requestAdd.visiable">
-      </request-add>
       <record-view
         @close="handlerecordViewClose"
         :recordShow="recordView.visiable"
@@ -99,12 +93,11 @@ import RecordView from './RecordView'
 import {mapState} from 'vuex'
 import { newSpread, floatForm, floatReset, saveExcel } from '@/utils/spreadJS'
 import moment from 'moment'
-import RequestAdd from './RequestAdd'
 moment.locale('zh-cn')
 
 export default {
   name: 'request',
-  components: {RequestAdd, RecordView, RangeDate},
+  components: {RecordView, RangeDate},
   data () {
     return {
       advanced: false,
@@ -145,26 +138,6 @@ export default {
         title: '入库单号',
         dataIndex: 'code'
       }, {
-        title: '总价',
-        dataIndex: 'totalPrice',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return '￥' + text.toFixed(2)
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '供应商',
-        dataIndex: 'supplierName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
         title: '保管人',
         dataIndex: 'custodianName',
         customRender: (text, row, index) => {
@@ -189,7 +162,7 @@ export default {
         dataIndex: 'remark',
         scopedSlots: {customRender: 'contentShow'}
       }, {
-        title: '入库时间',
+        title: '出库时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -262,7 +235,7 @@ export default {
         centered: true,
         onOk () {
           let ids = that.selectedRowKeys.join(',')
-          that.$delete('/cos/storage-record/' + ids).then(() => {
+          that.$delete('/cos/out-stock-record/' + ids).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -332,7 +305,7 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
-      this.$get('/cos/storage-record/page', {
+      this.$get('/cos/out-stock-record/page', {
         ...params
       }).then((r) => {
         let data = r.data.data
