@@ -153,6 +153,7 @@ export default {
     handleSubmit () {
       if (!this.staffInfo) {
         this.$message.error('请选择员工！')
+        return false
       }
       this.form.validateFields((err, values) => {
         if (!err) {

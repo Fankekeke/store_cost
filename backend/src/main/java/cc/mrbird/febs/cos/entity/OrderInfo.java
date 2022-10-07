@@ -50,9 +50,17 @@ public class OrderInfo implements Serializable {
     private String createTime;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 产品信息
      */
     @TableField(exist = false)
     private String material;
+
+    @TableField(exist = false)
+    private String handlerName;
 
 }

@@ -92,7 +92,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 添加订单编号
         orderInfo.setCode("ORDER-" + System.currentTimeMillis());
         orderInfo.setCreateTime(DateUtil.formatDateTime(new Date()));
-        List<StorehouseInfo> infoList = Convert.toList(StorehouseInfo.class, orderInfo.getMaterial());
+        List<StorehouseInfo> infoList = JSONUtil.toList(orderInfo.getMaterial(), StorehouseInfo.class);
+        BigDecimal totalPrice = infoList.stream().map(p -> p.getQuantity().multiply(p.getUnitPrice())).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        orderInfo.setTotalPrice(totalPrice);
         // 设置出库编号
         infoList.forEach(e -> e.setDeliveryOrderNumber(orderInfo.getCode()));
         storehouseInfoService.saveBatch(infoList);

@@ -7,11 +7,12 @@
         SELECT
         oi.id,
         oi.code ,
+        oi.remark ,
         oi.total_price AS totalPrice ,
         oi.handler_code AS handlerCode,
         oi.create_time AS createTime,
         si.staff_name AS handlerName,
-        si.avatar AS handlerAvatar,
+        si.avatar AS handlerAvatar
         FROM order_info oi
         LEFT JOIN staff_info si ON oi.handler_code = si.staff_code
         WHERE 1 = 1
@@ -37,7 +38,7 @@
         si.unit_price AS unitPrice
         FROM storehouse_info si
         LEFT JOIN order_info oi on oi.code = si.delivery_order_number
-        WHERE and oi.code = #{code}
+        WHERE 1 = 1 and oi.code = #{code}
         ORDER BY si.create_date DESC
     </select>
 

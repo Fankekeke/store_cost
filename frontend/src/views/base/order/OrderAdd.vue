@@ -12,31 +12,6 @@
     <a-form :form="form" layout="horizontal">
       <a-row :gutter="50">
         <a-col :span="8">
-          <a-form-item label='保管人' v-bind="formItemLayout">
-            <a-select style="width: 100%" v-model="custodian" option-label-prop="label">
-              <a-select-option v-for="(item, index) in staffList" :key="index" :value="item.staffCode" :label="item.staffName">
-                <a-row>
-                  <a-col :span="4">
-                    <a-avatar style="margin-right: 20px" shape="square" :size="40" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + item.avatar" />
-                  </a-col>
-                  <a-col :span="20">
-                    <a-row>
-                      <a-col><span>{{item.staffName}}</span></a-col>
-                      <a-col style="font-size: 10px">
-                        <span v-if="item.staffType === 1">售货员</span>
-                        <span v-if="item.staffType === 2">理货员</span>
-                        <span v-if="item.staffType === 3">收银员</span>
-                        <span v-if="item.staffType === 4">分拣员</span>
-                        <span v-if="item.staffType === 5">杂工</span>
-                      </a-col>
-                    </a-row>
-                  </a-col>
-                </a-row>
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
           <a-form-item label='经手人' v-bind="formItemLayout">
             <a-select style="width: 100%" v-model="handler" option-label-prop="label">
               <a-select-option v-for="(item, index) in staffList" :key="index" :value="item.staffCode" :label="item.staffName">
@@ -57,15 +32,6 @@
                     </a-row>
                   </a-col>
                 </a-row>
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label='供应商' v-bind="formItemLayout">
-            <a-select style="width: 100%" v-decorator="['supplierId', { rules: [{ required: true, message: '请选择供应商!' }] }]">
-              <a-select-option v-for="opt in supplierList" :key="opt.id" :value="opt.id">
-                {{ opt.supplierName }}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -187,7 +153,6 @@ export default {
   },
   mounted () {
     this.getStaffList()
-    this.getSupplierList()
   },
   data () {
     return {
@@ -197,17 +162,10 @@ export default {
       loading: false,
       staffList: [],
       handler: null,
-      custodian: null,
-      materialList: [],
-      supplierList: []
+      materialList: []
     }
   },
   methods: {
-    getSupplierList () {
-      this.$get('/cos/supplier-info/list/-1').then((r) => {
-        this.supplierList = r.data.data
-      })
-    },
     onSearch (searchText) {
       this.selectMaterialFuzzy(searchText)
     },
@@ -243,17 +201,16 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      if (this.handler == null || this.custodian == null || this.dataList.length === 0) {
+      if (this.handler == null || this.dataList.length === 0) {
         this.$message.error('请正确填写！')
         return false
       }
       this.form.validateFields((err, values) => {
         values.material = JSON.stringify(this.dataList)
         values.handlerCode = this.handler
-        values.custodianCode = this.custodian
         if (!err) {
           this.loading = true
-          this.$post('/cos/storage-record', {
+          this.$post('/cos/order-info', {
             ...values
           }).then((r) => {
             this.reset()
