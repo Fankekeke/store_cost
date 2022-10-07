@@ -97,7 +97,7 @@ public class SalaryRecords implements Serializable {
     /**
      * 住房公积金
      */
-    private Integer housingFund;
+    private BigDecimal housingFund;
 
     /**
      * 实发工资

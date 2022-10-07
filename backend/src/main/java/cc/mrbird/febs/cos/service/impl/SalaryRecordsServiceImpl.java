@@ -7,6 +7,7 @@ import cc.mrbird.febs.cos.service.ISalaryRecordsService;
 import cc.mrbird.febs.cos.dao.SalaryRecordsMapper;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +138,12 @@ public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, S
         if (count > 0) {
             throw new FebsException("本季度对该员工已发放工资！");
         }
+        // 实发工资
+        BigDecimal sum = salaryRecords.getBasicWage().add(salaryRecords.getPostAllowance()).add(salaryRecords.getPerformanceBonus()).add(salaryRecords.getOvertimePay()).add(salaryRecords.getHolidayCosts()).add(salaryRecords.getPension()).add(salaryRecords.getUnemployment()).add(salaryRecords.getMedicalInsurance()).add(salaryRecords.getTax()).add(salaryRecords.getHousingFund());
+        salaryRecords.setPayroll(sum);
+        salaryRecords.setYear(StrUtil.toString(DateUtil.year(new Date())));
+        salaryRecords.setMonth(StrUtil.toString(DateUtil.month(new Date())));
+        salaryRecords.setCreateDate(DateUtil.formatDateTime(new Date()));
         return this.save(salaryRecords);
     }
 
