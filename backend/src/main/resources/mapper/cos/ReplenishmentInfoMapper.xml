@@ -6,8 +6,10 @@
     <select id="selectReplenishmentPage" resultType="java.util.LinkedHashMap">
         SELECT
         ri.id,
-        ri.task_date,
+        ri.task_date AS taskDate,
         ri.content,
+        ri.status,
+        ri.replenishment,
         ri.staff_code,
         si.staff_name AS staffName,
         si.avatar
