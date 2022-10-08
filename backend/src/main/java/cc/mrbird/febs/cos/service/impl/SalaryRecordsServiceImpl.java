@@ -3,6 +3,7 @@ package cc.mrbird.febs.cos.service.impl;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.cos.entity.SalaryRecords;
 import cc.mrbird.febs.cos.entity.StaffInfo;
+import cc.mrbird.febs.cos.service.IMailService;
 import cc.mrbird.febs.cos.service.ISalaryRecordsService;
 import cc.mrbird.febs.cos.dao.SalaryRecordsMapper;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
@@ -16,6 +17,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,7 +34,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, SalaryRecords> implements ISalaryRecordsService {
 
+    private final TemplateEngine templateEngine;
+
     private final IStaffInfoService staffInfoService;
+
+    private final IMailService mailService;
 
     /**
      * 分页查询员工薪资发放记录
@@ -81,7 +88,7 @@ public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, S
     /**
      * 导出员工薪资发放
      *
-     * @param id  xx
+     * @param id xx
      * @return 结果
      * @throws Exception 异常
      */
@@ -138,12 +145,19 @@ public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, S
         if (count > 0) {
             throw new FebsException("本季度对该员工已发放工资！");
         }
+        // 员工信息
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffCode, salaryRecords.getStaffCode()));
         // 实发工资
         BigDecimal sum = salaryRecords.getBasicWage().add(salaryRecords.getPostAllowance()).add(salaryRecords.getPerformanceBonus()).add(salaryRecords.getOvertimePay()).add(salaryRecords.getHolidayCosts()).add(salaryRecords.getPension()).add(salaryRecords.getUnemployment()).add(salaryRecords.getMedicalInsurance()).add(salaryRecords.getTax()).add(salaryRecords.getHousingFund());
         salaryRecords.setPayroll(sum);
         salaryRecords.setYear(StrUtil.toString(DateUtil.year(new Date())));
         salaryRecords.setMonth(StrUtil.toString(DateUtil.month(new Date())));
         salaryRecords.setCreateDate(DateUtil.formatDateTime(new Date()));
+        Context context = new Context();
+        context.setVariable("today", DateUtil.formatDate(new Date()));
+        context.setVariable("custom", staffInfo.getStaffName() + "，您好。" + DateUtil.year(new Date()) + "年" + DateUtil.month(new Date()) + "月薪资已发放，共" + sum + "元，请注意查收");
+        String emailContent = templateEngine.process("registerEmail", context);
+        mailService.sendHtmlMail(staffInfo.getEmail(), DateUtil.year(new Date()) + "年" + DateUtil.month(new Date()) + "月-薪资发放记录", emailContent);
         return this.save(salaryRecords);
     }
 

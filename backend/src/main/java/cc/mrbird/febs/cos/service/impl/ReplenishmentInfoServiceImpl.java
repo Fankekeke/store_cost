@@ -7,7 +7,9 @@ import cc.mrbird.febs.cos.entity.ReplenishmentInfo;
 import cc.mrbird.febs.cos.dao.ReplenishmentInfoMapper;
 import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.entity.StorehouseInfo;
+import cc.mrbird.febs.cos.service.IMailService;
 import cc.mrbird.febs.cos.service.IReplenishmentInfoService;
+import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
@@ -19,6 +21,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -34,6 +38,10 @@ public class ReplenishmentInfoServiceImpl extends ServiceImpl<ReplenishmentInfoM
     private final StaffInfoMapper staffInfoMapper;
 
     private final StorehouseInfoMapper storehouseInfoMapper;
+
+    private final TemplateEngine templateEngine;
+
+    private final IMailService mailService;
 
     /**
      * 分页查询盘库信息
@@ -60,6 +68,11 @@ public class ReplenishmentInfoServiceImpl extends ServiceImpl<ReplenishmentInfoM
         StaffInfo staff = staffInfoMapper.selectOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getStaffCode, replenishmentInfo.getStaffCode()));
         if (staff != null && StrUtil.isNotEmpty(staff.getEmail())) {
             // 发送邮件
+            Context context = new Context();
+            context.setVariable("today", DateUtil.formatDate(new Date()));
+            context.setVariable("custom", staff.getStaffName() + "，您好。新的盘库记录已生成，请注意补货");
+            String emailContent = templateEngine.process("registerEmail", context);
+            mailService.sendHtmlMail(staff.getEmail(), DateUtil.formatDate(new Date()) + "盘库统计", emailContent);
         }
         return this.save(replenishmentInfo);
     }
