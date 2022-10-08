@@ -5,42 +5,42 @@
         关闭
       </a-button>
     </template>
-    <div style="font-size: 13px;font-family: SimHei" v-if="salaryRecordsData !== null">
+    <div style="font-size: 13px;font-family: SimHei" v-if="staffInfo !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">员工信息</span></a-col>
         <a-col :span="8"><b>员工姓名：</b>
           <a-popover>
             <template slot="content">
-              <a-avatar v-if="salaryRecordsData.avatar !== null" shape="square" :size="132" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + salaryRecordsData.avatar" />
+              <a-avatar v-if="staffInfo.avatar !== null" shape="square" :size="132" icon="user" :src="'http://127.0.0.1:9527/imagesWeb/' + staffInfo.avatar" />
               <a-avatar v-else shape="square" :size="132" icon="user" />
             </template>
-            <a>{{ salaryRecordsData.salaryRecordsName !== null ? salaryRecordsData.salaryRecordsName : '- -' }}</a>
+            <a>{{ staffInfo.staffName !== null ? staffInfo.staffName : '- -' }}</a>
           </a-popover>
         </a-col>
         <a-col :span="8"><b>联系方式：</b>
           <a-tooltip>
             <template slot="title">
-              {{ salaryRecordsData.email }}
+              {{ staffInfo.email }}
             </template>
-            {{ salaryRecordsData.email.slice(0, 8) }} ...
+            {{ staffInfo.email.slice(0, 8) }} ...
           </a-tooltip>
         </a-col>
         <a-col :span="8"><b>性别：</b>
-          <span v-if="salaryRecordsData.salaryRecordsSex === 1">男</span>
-          <span v-if="salaryRecordsData.salaryRecordsSex === 2">女</span>
+          <span v-if="staffInfo.staffSex === 1">男</span>
+          <span v-if="staffInfo.staffSex === 2">女</span>
         </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col :span="8"><b>员工职务：</b>
-          <span v-if="salaryRecordsData.salaryRecordsType === 1">售货员</span>
-          <span v-if="salaryRecordsData.salaryRecordsType === 2">理货员</span>
-          <span v-if="salaryRecordsData.salaryRecordsType === 3">收银员</span>
-          <span v-if="salaryRecordsData.salaryRecordsType === 4">分拣员</span>
-          <span v-if="salaryRecordsData.salaryRecordsType === 5">杂工</span>
+          <span v-if="staffInfo.staffType === 1">售货员</span>
+          <span v-if="staffInfo.staffType === 2">理货员</span>
+          <span v-if="staffInfo.staffType === 3">收银员</span>
+          <span v-if="staffInfo.staffType === 4">分拣员</span>
+          <span v-if="staffInfo.staffType === 5">杂工</span>
         </a-col>
         <a-col :span="8"><b>出生日期：</b>
-          {{ salaryRecordsData.birthDate }}
+          {{ staffInfo.birthDate }}
         </a-col>
       </a-row>
       <br/>
@@ -93,18 +93,23 @@ export default {
       fileList: [],
       previewVisible: false,
       previewImage: '',
-      gain: 0
+      gain: 0,
+      staffInfo: null
     }
   },
   watch: {
     salaryRecordsShow: function (value) {
-      if (value && this.salaryRecordsData.avatar !== null && this.salaryRecordsData.avatar !== '') {
-        this.getGainBysalaryRecordsCode(this.salaryRecordsData.salaryRecordsCode)
-        this.imagesInit(this.salaryRecordsData.avatar)
+      if (value) {
+        this.getStaffInfo(this.salaryRecordsData.staffCode)
       }
     }
   },
   methods: {
+    getStaffInfo (staffCode) {
+      this.$get(`/cos/staff-info/${staffCode}`).then((r) => {
+        this.staffInfo = r.data.data
+      })
+    },
     handleCancel () {
       this.previewVisible = false
     },

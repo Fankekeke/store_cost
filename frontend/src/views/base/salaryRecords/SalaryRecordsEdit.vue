@@ -208,7 +208,6 @@ export default {
         }
       })
       this.form.setFieldsValue(obj)
-      console.log(111)
     },
     reset () {
       this.loading = false
@@ -223,7 +222,7 @@ export default {
         values.id = this.rowId
         if (!err) {
           this.loading = true
-          this.$put('/cos/salaryRecords-info', {
+          this.$put('/cos/salary-records', {
             ...values
           }).then((r) => {
             this.reset()
