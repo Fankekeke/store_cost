@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="员工信息详情" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="信息详情" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
@@ -46,12 +46,59 @@
       <br/>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">当前薪资</span></a-col>
-        <a-col :span="24">
-          {{ gain }} 元
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">发放详情</span></a-col>
+        <a-col :span="8"><b>基础薪资：</b>
+          {{ salaryRecordsData.basicWage }} 元
+        </a-col>
+        <a-col :span="8"><b>岗位津贴：</b>
+          {{ salaryRecordsData.postAllowance }} 元
+        </a-col>
+        <a-col :span="8"><b>绩效奖金：</b>
+          {{ salaryRecordsData.performanceBonus }} 元
         </a-col>
       </a-row>
       <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="8"><b>加班费：</b>
+          {{ salaryRecordsData.overtimePay }} 元
+        </a-col>
+        <a-col :span="8"><b>过节费：</b>
+          {{ salaryRecordsData.holidayCosts }} 元
+        </a-col>
+        <a-col :span="8"><b>养老保险：</b>
+          {{ salaryRecordsData.pension }} 元
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="8"><b>失业保险：</b>
+          {{ salaryRecordsData.unemployment }} 元
+        </a-col>
+        <a-col :span="8"><b>医疗保险：</b>
+          {{ salaryRecordsData.medicalInsurance }} 元
+        </a-col>
+        <a-col :span="8"><b>税 金：</b>
+          {{ salaryRecordsData.tax }} 元
+        </a-col>
+      </a-row>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col :span="8"><b>住房公积金：</b>
+          {{ salaryRecordsData.housingFund }} 元
+        </a-col>
+        <a-col :span="8"><b>实发工资：</b>
+          {{ salaryRecordsData.payroll }} 元
+        </a-col>
+        <a-col :span="8"><b>发放时间：</b>
+          {{ salaryRecordsData.createDate }} 元
+        </a-col>
+      </a-row>
+      <br/>
+      <br/>
+      <a-row style="padding-left: 24px;padding-right: 24px;">
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">备注</span></a-col>
+        {{ salaryRecordsData.remark }}
+      </a-row>
     </div>
   </a-modal>
 </template>
