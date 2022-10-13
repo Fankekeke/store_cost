@@ -156,7 +156,7 @@ public class SalaryRecordsServiceImpl extends ServiceImpl<SalaryRecordsMapper, S
         Context context = new Context();
         context.setVariable("today", DateUtil.formatDate(new Date()));
         context.setVariable("custom", staffInfo.getStaffName() + "，您好。" + DateUtil.year(new Date()) + "年" + DateUtil.month(new Date()) + "月薪资已发放，共" + sum + "元，请注意查收");
-        String emailContent = templateEngine.process("registerEmail", context);
+        String emailContent = templateEngine.process("email", context);
         mailService.sendHtmlMail(staffInfo.getEmail(), DateUtil.year(new Date()) + "年" + DateUtil.month(new Date()) + "月-薪资发放记录", emailContent);
         return this.save(salaryRecords);
     }

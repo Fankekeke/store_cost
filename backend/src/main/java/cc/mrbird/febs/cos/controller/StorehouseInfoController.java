@@ -65,4 +65,13 @@ public class StorehouseInfoController {
     public R selectMaterialFuzzy(@PathVariable("materialName") String materialName) {
         return R.ok(storehouseInfoService.selectMaterialFuzzy(materialName));
     }
+
+    /**
+     * 盘库
+     */
+    @GetMapping("/replenishment")
+    public R replenishment() {
+        storehouseInfoService.diskLibrary();
+        return R.ok();
+    }
 }

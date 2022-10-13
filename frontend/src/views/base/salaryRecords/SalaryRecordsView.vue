@@ -90,7 +90,7 @@
           {{ salaryRecordsData.payroll }} 元
         </a-col>
         <a-col :span="8"><b>发放时间：</b>
-          {{ salaryRecordsData.createDate }} 元
+          {{ salaryRecordsData.createDate }}
         </a-col>
       </a-row>
       <br/>

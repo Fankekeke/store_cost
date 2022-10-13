@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -100,6 +101,9 @@ public class SalaryRecordsController {
      */
     @PutMapping
     public R edit(SalaryRecords salaryRecords) {
+        // 实发工资
+        BigDecimal sum = salaryRecords.getBasicWage().add(salaryRecords.getPostAllowance()).add(salaryRecords.getPerformanceBonus()).add(salaryRecords.getOvertimePay()).add(salaryRecords.getHolidayCosts()).add(salaryRecords.getPension()).add(salaryRecords.getUnemployment()).add(salaryRecords.getMedicalInsurance()).add(salaryRecords.getTax()).add(salaryRecords.getHousingFund());
+        salaryRecords.setPayroll(sum);
         return R.ok(salaryRecordsService.updateById(salaryRecords));
     }
 

@@ -101,7 +101,6 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, SysLog> implements Lo
             log.setParams(params.toString());
         }
         log.setCreateTime(new Date());
-        log.setLocation(AddressUtil.getCityInfo(log.getIp()));
         // 保存系统日志
         save(log);
     }
