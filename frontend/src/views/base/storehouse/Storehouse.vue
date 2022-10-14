@@ -45,7 +45,7 @@
     <div>
       <div class="operator">
         <a-button type="primary" ghost @click="add">出库</a-button>
-<!--        <a-button @click="batchDelete">删除</a-button>-->
+        <a-button @click="replenishment">盘库</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table ref="TableInfo"
@@ -219,6 +219,11 @@ export default {
       })
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
+    },
+    replenishment () {
+      this.$get('/cos/storehouse-info/replenishment').then((r) => {
+        this.$message.success('等在盘库~请稍等')
+      })
     },
     add () {
       if (!this.selectedRowKeys.length) {

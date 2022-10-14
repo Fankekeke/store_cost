@@ -6,6 +6,7 @@ import cc.mrbird.febs.cos.dao.StorehouseInfoMapper;
 import cc.mrbird.febs.cos.service.IReplenishmentInfoService;
 import cc.mrbird.febs.cos.service.IStorehouseInfoService;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -89,7 +90,7 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
         ReplenishmentInfo replenishment = new ReplenishmentInfo();
         replenishment.setStatus(0);
         replenishment.setTaskDate(DateUtil.formatDate(new Date()));
-        replenishment.setContent(sb.toString());
+        replenishment.setContent(StrUtil.isEmpty(sb.toString()) ? "库存充足" : sb.toString());
         replenishment.setReplenishment(JSONUtil.toJsonStr(result));
         replenishmentInfoService.save(replenishment);
     }
