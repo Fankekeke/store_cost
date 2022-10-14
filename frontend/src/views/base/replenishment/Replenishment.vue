@@ -50,9 +50,9 @@
           <template>
             <a-tooltip>
               <template slot="title">
-                {{ record.remark }}
+                {{ record.content }}
               </template>
-              {{ record.remark.slice(0, 30) }} ...
+              {{ record.content.slice(0, 80) }} ...
             </a-tooltip>
           </template>
         </template>
@@ -117,33 +117,7 @@ export default {
     }),
     columns () {
       return [{
-        title: '入库单号',
-        dataIndex: 'code'
-      }, {
-        title: '盘库信息',
-        dataIndex: 'replenishment'
-      }, {
-        title: '状态',
-        dataIndex: 'status',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '经手人',
-        dataIndex: 'staffName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '备注',
+        title: '盘库统计',
         dataIndex: 'content',
         scopedSlots: {customRender: 'contentShow'}
       }, {
