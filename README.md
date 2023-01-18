@@ -56,7 +56,7 @@ Email: fan1ke2ke@gmail.com
 
 WeChat: `Storm_Berserker`
 
-`伸手党勿扰`
+`因为要恰饭资源非免费，伸手党勿扰，谢谢理解`
 
 #### 接JAVAWEB毕设，纯原创，价格公道，诚信第一
 
