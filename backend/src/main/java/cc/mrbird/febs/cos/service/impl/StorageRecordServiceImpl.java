@@ -123,7 +123,9 @@ public class StorageRecordServiceImpl extends ServiceImpl<StorageRecordMapper, S
                 putStockList.add(stockItem);
             }
         });
-        storehouseInfoService.updateBatchById(inStockList);
+        if (CollectionUtil.isNotEmpty(inStockList)) {
+            storehouseInfoService.updateBatchById(inStockList);
+        }
         if (CollectionUtil.isNotEmpty(putStockList)) {
             infoList.addAll(putStockList);
         }

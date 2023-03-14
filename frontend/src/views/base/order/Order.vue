@@ -191,15 +191,16 @@ export default {
   methods: {
     downLoad (row) {
       this.$message.loading('正在生成', 0)
-      this.$get('/cos/goods-belong/getGoodsByNum', { num: row.num }).then((r) => {
+      this.$get(`/cos/order-info/export/${row.code}`).then((r) => {
+        let materialList = r.data.materialMapList
         let newData = []
-        r.data.data.forEach((item, index) => {
-          newData.push([(index + 1).toFixed(0), item.name, item.unit !== null ? item.unit : '- -', item.amount, row.price])
+        materialList.forEach((item, index) => {
+          newData.push([(index + 1).toFixed(0), item.materialName, item.model !== null ? item.model : '- -', item.measurementUnit !== null ? item.measurementUnit : '- -', item.quantity, item.unitPrice])
         })
-        let spread = newSpread('inboundOrder')
-        spread = floatForm(spread, 'inboundOrder', newData)
-        saveExcel(spread, '入库单.xlsx')
-        floatReset(spread, 'inboundOrder', newData.length)
+        let spread = newSpread('orderTable')
+        spread = floatForm(spread, 'orderTable', newData)
+        saveExcel(spread, '订单小票.xlsx')
+        floatReset(spread, 'orderTable', newData.length)
         this.$message.destroy()
       })
     },

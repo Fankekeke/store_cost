@@ -63,17 +63,27 @@ const saveExcel = (spread, fileName) => {
 
 // 表名对应的JSON模板文件名
 const fileNameData = {
-  textTable: 'text.json'
+  orderTable: 'order.json',
+  outTable: 'outStock.json',
+  inTable: 'inStock.json'
 }
 
 // 表名对应的开始行index
 const startRowData = {
-  textTable: 1
+  orderTable: 5,
+  outTable: 8,
+  inTable: 8
 }
 
 // 表名对应的各列名，列名又对应行数和列数
 const rowColData = {
-  textTable: {
+  orderTable: {
+    title: {row: 0, col: 1}
+  },
+  outTable: {
+    title: {row: 0, col: 1}
+  },
+  inTable: {
     title: {row: 0, col: 1}
   }
 }

@@ -80,27 +80,39 @@
 
     <!-- 分页查询入库统计 -->
     <select id="selectLastSevenDaysInCount" resultType="java.util.LinkedHashMap">
-        select
-        date_format(l.create_date, '%m-%d') days,
-        sum(l.quantity) AS quantity,
-        sum(l.totalPrice) AS totalPrice
-        from
+        SELECT
+        date_format( spo.days, '%m-%d' ) days,
+        sum( l.quantity ) AS quantity,
+        sum( l.totalPrice ) AS totalPrice
+        FROM
         (
-        select
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 0 DAY ) days UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 1 DAY ) UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 2 DAY ) UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 3 DAY ) UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 4 DAY ) UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 5 DAY ) UNION
+        SELECT
+        DATE_SUB( curdate(), INTERVAL + 6 DAY )
+        ) AS spo
+        LEFT JOIN (
+        SELECT
         sr.create_date,
         si.material_type,
         si.quantity,
         si.unit_price * si.quantity AS totalPrice
-        from
+        FROM
         storage_record sr
-        LEFT JOIN storehouse_info si ON si.delivery_order_number = sr.code
-        where
-        date_sub(curdate(), interval 7 day) &lt;= date(sr.create_date)
-        ) as l where 1 = 1
-        <if test="materialType != null">
-            and l.material_type = 0
-        </if>
-        group by
+        LEFT JOIN storehouse_info si ON si.inbound_order_number = sr.CODE
+        ) AS l ON (
+        DATE_FORMAT( l.create_date, '%Y-%m-%d' ) = DATE_FORMAT( spo.days, '%Y-%m-%d' ))
+        GROUP BY
         days
     </select>
 </mapper>

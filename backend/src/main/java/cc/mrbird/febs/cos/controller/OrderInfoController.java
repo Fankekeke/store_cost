@@ -104,7 +104,7 @@ public class OrderInfoController {
      * @param month 季度
      * @return 结果
      */
-    @GetMapping("statistics")
+    @GetMapping("/statistics")
     public R selectStatisticsByMonth(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
         return R.ok(orderInfoService.selectStatisticsByMonth(year, month));
     }
@@ -116,7 +116,7 @@ public class OrderInfoController {
      * @param month 季度
      * @return 结果
      */
-    @GetMapping("statistics/rate")
+    @GetMapping("/statistics/rate")
     public R selectStatisticsByYear(@RequestParam("year") String year, @RequestParam(value = "month", required = false) String month) {
         return R.ok(orderInfoService.selectMaterialTypeRate(year, month));
     }

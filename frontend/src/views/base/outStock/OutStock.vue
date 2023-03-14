@@ -39,7 +39,6 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add">入库</a-button>
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -184,15 +183,19 @@ export default {
   methods: {
     downLoad (row) {
       this.$message.loading('正在生成', 0)
-      this.$get('/cos/goods-belong/getGoodsByNum', { num: row.num }).then((r) => {
+      this.$get(`/cos/out-stock-record/export/${row.code}`, { num: row.num }).then((r) => {
+        let materialList = r.data.materialList
         let newData = []
-        r.data.data.forEach((item, index) => {
-          newData.push([(index + 1).toFixed(0), item.name, item.unit !== null ? item.unit : '- -', item.amount, row.price])
+        materialList.forEach((item, index) => {
+          newData.push([(index + 1).toFixed(0), item.materialName, item.measurementUnit !== null ? item.measurementUnit : '- -', item.quantity, item.unitPrice])
         })
-        let spread = newSpread('inboundOrder')
-        spread = floatForm(spread, 'inboundOrder', newData)
-        saveExcel(spread, '入库单.xlsx')
-        floatReset(spread, 'inboundOrder', newData.length)
+        let spread = newSpread('outTable')
+        let sheet = spread.getActiveSheet()
+        sheet.suspendPaint()
+        sheet.setValue(2, 12, row.code)
+        spread = floatForm(spread, 'outTable', newData)
+        saveExcel(spread, '出库单.xlsx')
+        floatReset(spread, 'outTable', newData.length)
         this.$message.destroy()
       })
     },

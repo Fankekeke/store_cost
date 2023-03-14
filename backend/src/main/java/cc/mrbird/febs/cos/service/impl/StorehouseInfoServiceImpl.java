@@ -75,6 +75,8 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
                 {
                     put("materialName", item.getMaterialName());
                     put("materialType", item.getMaterialType());
+                    put("model", item.getModel());
+                    put("quantity", item.getQuantity());
                     put("measurementUnit", item.getMeasurementUnit());
                     put("unitPrice", item.getUnitPrice());
                 }

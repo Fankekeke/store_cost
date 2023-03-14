@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="出库详情" @cancel="onClose" :width="900">
+  <a-modal v-model="show" title="盘库详情" @cancel="onClose" :width="900">
     <template slot="footer">
       <a-button key="back" @click="onClose" type="danger">
         关闭
@@ -8,26 +8,15 @@
     <div style="font-size: 13px;font-family: SimHei" v-if="recordData !== null">
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">基础信息</span></a-col>
-        <a-col :span="8"><b>出库单号：</b>
-          {{ recordData.code !== null ? recordData.code : '- -' }}
-        </a-col>
-        <a-col :span="8"><b>保管人：</b>
-          {{ recordData.custodianName }}
-        </a-col>
-        <a-col :span="8"><b>经手人：</b>
-          {{ recordData.handlerName }}
+        <a-col :span="8"><b>盘库时间：</b>
+          {{ recordData.taskDate !== null ? recordData.taskDate : '- -' }}
         </a-col>
       </a-row>
       <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="8"><b>入库时间：</b>
-          {{ recordData.createDate !== null ? recordData.createDate : '- -' }}
-        </a-col>
-      </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">备 注</span></a-col>
-        {{ recordData.remark }}
+        {{ recordData.content }}
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;" :gutter="15">
@@ -126,16 +115,13 @@ export default {
   watch: {
     recordShow: function (value) {
       if (value) {
-        this.getGoodsByNum(this.recordData.code)
+        this.getGoods(this.recordData)
       }
     }
   },
   methods: {
-    getGoodsByNum (num) {
-      this.$get(`/cos/out-stock-record/${num}`).then((r) => {
-        this.goodsList = r.data.data
-        console.log(this.goodsList)
-      })
+    getGoods (recordData) {
+      this.goodsList = JSON.parse(recordData.replenishment)
     },
     onClose () {
       this.$emit('close')
