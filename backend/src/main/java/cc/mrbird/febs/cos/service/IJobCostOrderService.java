@@ -21,4 +21,5 @@ public interface IJobCostOrderService extends IService<JobCostOrder> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> selectJobCostOrderPage(Page<JobCostOrder> page, JobCostOrder jobCostOrder);
+
 }

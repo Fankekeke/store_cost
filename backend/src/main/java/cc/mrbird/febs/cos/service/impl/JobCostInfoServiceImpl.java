@@ -27,4 +27,19 @@ public class JobCostInfoServiceImpl extends ServiceImpl<JobCostInfoMapper, JobCo
     public IPage<LinkedHashMap<String, String>> selectJobCostPage(Page<JobCostInfo> page, JobCostInfo jobCostInfo) {
         return baseMapper.selectJobCostPage(page, jobCostInfo);
     }
+
+    /**
+     * 作业成本详情
+     *
+     * @param orderId 作业成本ID
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> selectCostDetail(Integer orderId) {
+        if (orderId == null) {
+            return null;
+        }
+        // 返回数据
+        return null;
+    }
 }

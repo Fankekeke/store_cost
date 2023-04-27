@@ -22,4 +22,11 @@ public interface IJobCostInfoService extends IService<JobCostInfo> {
      */
     IPage<LinkedHashMap<String, String>> selectJobCostPage(Page<JobCostInfo> page, JobCostInfo jobCostInfo);
 
+    /**
+     * 作业成本详情
+     *
+     * @param orderId 作业成本ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> selectCostDetail(Integer orderId);
 }

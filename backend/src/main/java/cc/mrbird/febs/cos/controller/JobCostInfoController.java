@@ -36,7 +36,7 @@ public class JobCostInfoController {
     /**
      * 作业成本导出
      *
-     * @param code 入库单号
+     * @param code 作业成本ID
      * @return 结果
      * @throws Exception 异常
      */
@@ -48,7 +48,7 @@ public class JobCostInfoController {
     /**
      * 作业成本详情
      *
-     * @param code 入库单号
+     * @param code 作业成本ID
      * @return 结果
      */
     @GetMapping("/{code}")
