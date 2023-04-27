@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.cos.dao.JobCostOrderMapper">
+
+    <!-- 分页查询作业成本订单 -->
+    <select id="selectJobCostOrderPage" resultType="java.util.LinkedHashMap">
+        select
+        id,
+        create_by,
+        order_name,
+        order_code,
+        create_date,
+        remark
+        from
+        job_cost_order
+        where
+        1 = 1
+        <if test="jobCostOrder.orderName != null and jobCostOrder.orderName != ''">
+            and order_name LIKE CONCAT('%',#{jobCostOrder.orderName},'%')
+        </if>
+        <if test="jobCostOrder.orderCode != null and jobCostOrder.orderCode != ''">
+            and order_code LIKE CONCAT('%',#{jobCostOrder.orderCode},'%')
+        </if>
+        order by
+        create_date desc
+    </select>
+</mapper>
