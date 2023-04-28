@@ -1,8 +1,10 @@
 package cc.mrbird.febs.cos.controller;
 
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.JobCostInfo;
+import cc.mrbird.febs.cos.entity.JobCostOrder;
 import cc.mrbird.febs.cos.service.IJobCostInfoService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,17 @@ public class JobCostInfoController {
     @GetMapping("/page")
     public R page(Page<JobCostInfo> page, JobCostInfo jobCostInfo) {
         return R.ok(jobCostInfoService.selectJobCostPage(page, jobCostInfo));
+    }
+
+    /**
+     * 添加作业成本订单
+     *
+     * @param jobCostOrder 作业成本订单
+     * @return 结果
+     */
+    @PostMapping("/cost/order")
+    public R saveCostOrder(JobCostOrder jobCostOrder) throws FebsException {
+        return R.ok(jobCostInfoService.saveCostOrder(jobCostOrder));
     }
 
     /**

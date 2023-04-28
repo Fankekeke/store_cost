@@ -49,6 +49,38 @@
             </a-select>
           </a-form-item>
         </a-col>
+        <a-col :span="24">
+          <!-- 表格区域 -->
+          <a-table ref="TableInfo"
+                  :columns="columns"
+                  :dataSource="dataSource"
+                  :scroll="{ x: 900 }">
+            <template slot="titleShow" slot-scope="text, record">
+              <template>
+                <a-badge status="processing"/>
+                <a-tooltip>
+                  <template slot="title">
+                    {{ record.title }}
+                  </template>
+                  {{ record.title.slice(0, 8) }} ...
+                </a-tooltip>
+              </template>
+            </template>
+            <template slot="contentShow" slot-scope="text, record">
+              <template>
+                <a-tooltip>
+                  <template slot="title">
+                    {{ record.content }}
+                  </template>
+                  {{ record.content.slice(0, 30) }} ...
+                </a-tooltip>
+              </template>
+            </template>
+            <template slot="operation" slot-scope="text, record">
+              <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
+            </template>
+          </a-table>
+        </a-col>
       </a-row>
     </a-form>
   </a-modal>
@@ -85,6 +117,26 @@ export default {
       },
       set: function () {
       }
+    },
+    columns () {
+      return [{
+        title: '作业',
+        dataIndex: 'jobName'
+      }, {
+        title: '作业成本',
+        dataIndex: 'jobCost'
+      }, {
+        title: '作业动因',
+        dataIndex: 'jobMotivation'
+      }, {
+        title: '作业动因数',
+        children: [
+
+        ]
+      }, {
+        title: '成本动因率',
+        dataIndex: 'costRate'
+      }]
     }
   },
   data () {
@@ -94,10 +146,17 @@ export default {
       loading: false,
       fileList: [],
       previewVisible: false,
-      previewImage: ''
+      previewImage: '',
+      materialList: [],
+      dataSource: []
     }
   },
   methods: {
+    selectMaterialList () {
+      this.$get('/cos/storehouse-info/all/material').then((r) => {
+        this.materialList = r.data.data
+      })
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -120,17 +179,7 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      // 获取图片List
-      let images = []
-      this.fileList.forEach(image => {
-        if (image.response !== undefined) {
-          images.push(image.response)
-        } else {
-          images.push(image.name)
-        }
-      })
       this.form.validateFields((err, values) => {
-        values.images = images.length > 0 ? images.join(',') : null
         if (!err) {
           values.publisher = this.currentUser.userId
           this.loading = true
