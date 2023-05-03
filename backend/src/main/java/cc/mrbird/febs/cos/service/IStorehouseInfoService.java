@@ -45,4 +45,11 @@ public interface IStorehouseInfoService extends IService<StorehouseInfo> {
      */
     List<LinkedHashMap<String, Object>> selectMaterialFuzzy(String materialName);
 
+    /**
+     * 查询所有物料信息
+     *
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectStoreAllInfo();
+
 }

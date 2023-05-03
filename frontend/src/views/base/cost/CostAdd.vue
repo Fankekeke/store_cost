@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增成本" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增成本" @cancel="onClose" :width="1200">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -37,17 +37,44 @@
         <a-col :span="24">
           <a-form-item label='选择物品' v-bind="formItemLayout">
             <a-select
+              :disabled="goodsCheckLock"
+              v-model="checkMaterial"
+              mode="multiple"
               style="width: 100%"
-              mode="tags"
-              placeholder="Please select"
-              :default-value="['a1', 'b2']"
-              @change="handleChange"
+              option-label-prop="label"
             >
-              <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
-                {{ (i + 9).toString(36) + i }}
+              <a-select-option v-for="(item, index) in materialList" :value="item.materialId" :key="index" :label="item.materialName">
+                {{ item.materialName }}
               </a-select-option>
             </a-select>
           </a-form-item>
+          <a-button style="margin-top: 5px;margin-bottom: 10px" @click="goodsCheck">
+            确认物品
+          </a-button>
+        </a-col>
+        <a-col :span="24">
+          <!-- 表格区域 -->
+          <a-table bordered ref="TableInfo"
+                   :rowKey="record => record.id"
+                  :columns="dataColumns"
+                  :dataSource="dataSource"
+                  :scroll="{ x: 900 }">
+            <template slot="jobName" slot-scope="text, record">
+              <a-input v-model="record.jobName"/>
+            </template>
+            <template slot="jobCost" slot-scope="text, record">
+              <a-input-number :min="1" :max="999999" v-model="record.jobCost"/>
+            </template>
+            <template slot="jobMotivation" slot-scope="text, record">
+              <a-input v-model="record.jobMotivation"/>
+            </template>
+          </a-table>
+          <a-button type="primary" style="margin-top: 30px" @click="dataAddChange">
+            添加
+          </a-button>
+          <a-button type="primary" style="margin-top: 30px" @click="dataAddChange1">
+            计算
+          </a-button>
         </a-col>
       </a-row>
     </a-form>
@@ -94,10 +121,99 @@ export default {
       loading: false,
       fileList: [],
       previewVisible: false,
-      previewImage: ''
+      previewImage: '',
+      materialList: [],
+      checkMaterial: [],
+      dataSource: [],
+      goodsCheckLock: false,
+      dataColumns: [{
+        title: '作业',
+        dataIndex: 'jobName',
+        scopedSlots: {customRender: 'jobName'}
+      }, {
+        title: '作业成本',
+        dataIndex: 'jobCost',
+        scopedSlots: {customRender: 'jobCost'}
+      }, {
+        title: '作业动因',
+        dataIndex: 'jobMotivation',
+        scopedSlots: {customRender: 'jobMotivation'}
+      }, {
+        title: '作业动因数',
+        children: [
+
+        ]
+      }, {
+        title: '成本动因率',
+        dataIndex: 'costRate'
+      }]
     }
   },
+  mounted () {
+    this.selectMaterialList()
+  },
   methods: {
+    dataAddChange () {
+      if (this.checkMaterial.length === 0) {
+        this.$message.error('请先选择物品！')
+        return false
+      }
+      if (!this.goodsCheckLock) {
+        this.$message.error('请确认物品')
+        return false
+      }
+      let row = {id: Date.now(), jobName: '', jobCost: 0, jobMotivation: '', costRate: 0}
+      this.materialList.forEach(e => {
+        this.checkMaterial.forEach(ee => {
+          if (e.materialId === ee) {
+            row[ee] = e.num
+          }
+        })
+      })
+      this.dataSource.push(row)
+      console.log(JSON.stringify(this.dataSource))
+    },
+    dataAddChange1 () {
+      if (this.dataSource.length === 0) {
+        this.$message.error('添加成本信息！')
+        return false
+      }
+      // 获取合计
+      let total = 0
+      this.materialList.forEach(e => {
+        this.checkMaterial.forEach(ee => {
+          if (e.materialId === ee) {
+            total = total + e.num
+          }
+        })
+      })
+      this.dataSource.forEach(e => {
+        e.costRate = (e.jobCost / total).toFixed(2)
+      })
+      console.log(JSON.stringify(this.dataSource))
+    },
+    goodsCheck () {
+      if (this.checkMaterial.length === 0) {
+        this.$message.error('请先选择物品！')
+        return false
+      }
+      this.goodsCheckLock = true
+      // 设置表头
+      let dataColumns = []
+      this.materialList.forEach(e => {
+        this.checkMaterial.forEach(ee => {
+          if (e.materialId === ee) {
+            dataColumns.push({title: e.materialName.slice(0, 8) + '...', dataIndex: ee})
+          }
+        })
+      })
+      this.dataColumns[3].children = dataColumns
+    },
+    selectMaterialList () {
+      this.$get('/cos/storehouse-info/all/material').then((r) => {
+        this.materialList = r.data.data
+      })
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -120,21 +236,30 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      // 获取图片List
-      let images = []
-      this.fileList.forEach(image => {
-        if (image.response !== undefined) {
-          images.push(image.response)
-        } else {
-          images.push(image.name)
-        }
-      })
+      if (this.dataSource.length === 0) {
+        this.$message.error('请完整填写！')
+        return false
+      }
       this.form.validateFields((err, values) => {
-        values.images = images.length > 0 ? images.join(',') : null
+        let materialCostNum = []
+        // 获取合计
+        let total = 0
+        this.materialList.forEach(e => {
+          this.checkMaterial.forEach(ee => {
+            if (e.materialId === ee) {
+              materialCostNum.push({materialId: e.materialId, materialName: e.materialName, num: e.num})
+              total = total + e.num
+            }
+          })
+        })
+        let costList = []
+        this.dataSource.forEach(e => {
+          costList.push({jobName: e.jobName, jobCost: e.jobCost, jobMotivation: e.jobMotivation, materialCostNum: JSON.stringify(materialCostNum)})
+        })
+        values.costList = JSON.stringify(costList)
         if (!err) {
-          values.publisher = this.currentUser.userId
           this.loading = true
-          this.$post('/cos/cost-info', {
+          this.$post('/cos/job-cost-info/cost/order', {
             ...values
           }).then((r) => {
             this.reset()

@@ -45,6 +45,16 @@ public class StorehouseInfoController {
     }
 
     /**
+     * 查询所有物料信息
+     *
+     * @return 结果
+     */
+    @GetMapping("/all/material")
+    public R selectStoreAllInfo() {
+        return R.ok(storehouseInfoService.selectStoreAllInfo());
+    }
+
+    /**
      * 删除库房信息
      *
      * @param ids 库房信息IDS

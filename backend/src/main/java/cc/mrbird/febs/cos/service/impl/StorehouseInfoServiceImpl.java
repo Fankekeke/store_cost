@@ -120,4 +120,29 @@ public class StorehouseInfoServiceImpl extends ServiceImpl<StorehouseInfoMapper,
         });
         return result;
     }
+
+    /**
+     * 查询所有物料信息
+     *
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> selectStoreAllInfo() {
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>();
+        List<StorehouseInfo> storehouseList = this.list(Wrappers.<StorehouseInfo>lambdaQuery().eq(StorehouseInfo::getTransactionType, 0));
+        storehouseList.forEach(item -> {
+            result.add(new LinkedHashMap<String, Object>() {
+                {
+                    put("materialId", item.getId());
+                    put("materialName", item.getMaterialName());
+                    put("materialType", item.getMaterialType());
+                    put("num", item.getQuantity());
+                    put("model", item.getModel());
+                    put("measurementUnit", item.getMeasurementUnit());
+                    put("unitPrice", item.getUnitPrice());
+                }
+            });
+        });
+        return result;
+    }
 }

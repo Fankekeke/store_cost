@@ -1,12 +1,15 @@
 package cc.mrbird.febs.cos.service;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.cos.entity.JobCostInfo;
+import cc.mrbird.febs.cos.entity.JobCostOrder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -29,4 +32,28 @@ public interface IJobCostInfoService extends IService<JobCostInfo> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectCostDetail(Integer orderId);
+
+    /**
+     * 添加作业成本订单
+     *
+     * @param jobCostOrder 作业成本订单
+     * @return 结果
+     */
+    boolean saveCostOrder(JobCostOrder jobCostOrder) throws FebsException;
+
+    /**
+     * 获取成本表头
+     *
+     * @param costId 成本ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectCostHeader(Integer costId);
+
+    /**
+     * 获取成本数据
+     *
+     * @param costId 成本ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> selectCostData(Integer costId);
 }

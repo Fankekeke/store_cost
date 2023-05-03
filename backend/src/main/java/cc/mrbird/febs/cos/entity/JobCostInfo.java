@@ -35,7 +35,7 @@ public class JobCostInfo implements Serializable {
     /**
      * 作业成本
      */
-    private String jobCost;
+    private BigDecimal jobCost;
 
     /**
      * 作业动因
@@ -62,5 +62,8 @@ public class JobCostInfo implements Serializable {
      */
     private Integer orderId;
 
-
+    /**
+     * 各个产品动因数
+     */
+    private String materialCostNum;
 }

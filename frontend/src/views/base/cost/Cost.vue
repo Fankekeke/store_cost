@@ -7,18 +7,18 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="标题"
+                label="成本名称"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-input v-model="queryParams.title"/>
+                <a-input v-model="queryParams.orderName"/>
               </a-form-item>
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="内容"
+                label="成本编号"
                 :labelCol="{span: 4}"
                 :wrapperCol="{span: 18, offset: 2}">
-                <a-input v-model="queryParams.content"/>
+                <a-input v-model="queryParams.orderCode"/>
               </a-form-item>
             </a-col>
           </div>
@@ -55,18 +55,8 @@
             </a-tooltip>
           </template>
         </template>
-        <template slot="contentShow" slot-scope="text, record">
-          <template>
-            <a-tooltip>
-              <template slot="title">
-                {{ record.content }}
-              </template>
-              {{ record.content.slice(0, 30) }} ...
-            </a-tooltip>
-          </template>
-        </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
+          <a-icon type="car" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修 改"></a-icon>
         </template>
       </a-table>
     </div>
@@ -82,6 +72,11 @@
       @success="handlecostEditSuccess"
       :costEditVisiable="costEdit.visiable">
     </cost-edit>
+    <cost-view
+      @close="handlerecordViewClose"
+      :recordShow="recordView.visiable"
+      :recordData="recordView.data">
+    </cost-view>
   </a-card>
 </template>
 
@@ -89,13 +84,14 @@
 import RangeDate from '@/components/datetime/RangeDate'
 import costAdd from './CostAdd.vue'
 import costEdit from './CostEdit.vue'
+import costView from './CostView.vue'
 import {mapState} from 'vuex'
 import moment from 'moment'
 moment.locale('zh-cn')
 
 export default {
   name: 'cost',
-  components: {costAdd, costEdit, RangeDate},
+  components: {costAdd, costEdit, costView, RangeDate},
   data () {
     return {
       advanced: false,
@@ -104,6 +100,10 @@ export default {
       },
       costEdit: {
         visiable: false
+      },
+      recordView: {
+        visiable: false,
+        data: null
       },
       queryParams: {},
       filteredInfo: null,
@@ -136,7 +136,7 @@ export default {
         dataIndex: 'orderName'
       }, {
         title: '发布时间',
-        dataIndex: 'create_date',
+        dataIndex: 'createDate',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -146,17 +146,7 @@ export default {
         }
       }, {
         title: '上传人',
-        dataIndex: 'create_by',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '上传人',
-        dataIndex: 'create_by',
+        dataIndex: 'createBy',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -203,11 +193,14 @@ export default {
       this.search()
     },
     edit (record) {
-      this.$refs.costEdit.setFormValues(record)
-      this.costEdit.visiable = true
+      this.recordView.data = record
+      this.recordView.visiable = true
     },
     handlecostEditClose () {
       this.costEdit.visiable = false
+    },
+    handlerecordViewClose () {
+      this.recordView.visiable = false
     },
     handlecostEditSuccess () {
       this.costEdit.visiable = false
