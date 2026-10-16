@@ -1,31 +1,17 @@
-### 基于SpringBoot + Vue的超市成本管理系统
+![](https://img.shields.io/badge/License-MIT-blue.svg)
 
-超市管理，超市商品管理 商品进销存 超市订单管理
+![](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)
 
-##### 权限安全与系统定制
-###### 系统登录与密码修改： 建立安全的身份验证机制，支持个性化系统参数定制，确保管理权限的私密性与系统环境的适配性。
+![](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-##### 数据驾驶舱与经营分析
-###### 出入库数据统计： 实时汇总近七天的订单及流转信息，通过动态数据直观呈现超市日常运营效率与物资周转动态。
+# 基于 SpringBoot + Vue 的超市成本管理系统 (Supermarket Cost Management System)
 
-###### 订单与销售统计： 深度分析订单类型分布与商品售出占比，利用数据可视化手段辅助管理层精准掌握市场消费偏好。
+入库管理 · 出库管理 · 库存盘点 · 供应商准入 · 订单统计 · 薪资管理 · 成本核算 · 数据导出
 
-##### 供应链与交易闭环管理
-###### 供应商准入管理： 严格审核供货商资质，建立合作档案与信用评价体系，从源头保障超市商品的品质安全与供应稳定。
-
-###### 订单管理与执行： 全生命周期追踪商品采购与销售订单，确保每一笔交易流程合规，实现零售业务的数字化闭环。
-
-##### 仓储物流与单据追溯
-###### 出入库记录及导出： 详细记录物资进出详情，支持一键导出标准格式的单据，为财务对账与库存审计提供法定依据。
-
-###### 库房管理与盘库： 动态监控货位状态，定期执行自动化盘点统计，实时核纠库存差异，确保存货资产账实相符。
-
-##### 人力资源与薪资激励
-###### 员工管理与信息修改： 集中维护员工数字化档案，实时更新职级与联系方式，构建灵活的人事基础数据管理体系。
-
-###### 薪资涨幅与发放记录： 统计员工薪酬变动趋势并归档发放凭证，通过透明的财务记录提升员工满意度与内部管理效率。
+本项目是一套面向中小型超市的进销存与成本一体化管理系统，采用前后端分离架构，覆盖管理员与员工两类角色。系统围绕"商品入库、销售出库、库存盘点、供应商准入、订单管理、薪资发放、成本核算、数据统计"等核心业务设计，支持商品全流程出入库追踪、供应商准入审核、订单类型统计、售出统计、盘库统计、员工薪资涨幅统计与薪资发放记录管理，管理员可导出入库单与出库单，实现超市采购、销售、库存、人力成本与财务结算的数字化闭环，适用于中小型超市、便利店、社区生鲜店、连锁门店及仓储式零售企业的日常运营管理。
 
 #### 安装环境
+️**注意**：请确保您的开发环境已安装以下依赖。
 
 JAVA 环境 
 
@@ -33,49 +19,138 @@ Node.js环境 [https://nodejs.org/en/] 选择14.17
 
 Yarn 打开cmd， 输入npm install -g yarn !!!必须安装完毕nodejs
 
-Mysql 数据库 [https://blog.csdn.net/qq_40303031/article/details/88935262] 一定要把账户和密码记住
+Mysql 数据库 一定要把账户和密码记住
 
 redis
 
-Idea 编译器 [https://blog.csdn.net/weixin_44505194/article/details/104452880]
+Idea 编译器
 
-WebStorm OR VScode 编译器 [https://www.jianshu.com/p/d63b5bae9dff]
+WebStorm OR VScode 编译器
 
 #### 采用技术及功能
 
 后端：SpringBoot、MybatisPlus、MySQL、Redis、
 前端：Vue、Apex、Antd、Axios
 
-管理员：系统登录，修改密码，系统定制，数据统计（七天内订单，入库，出库信息统计），订单类型统计，售出统计，供应商准入管理，订单管理，出库记录（查看出库详情，导出出库单），入库记录（查看入库详情，导出入库单）
+平台前端：vue(框架) + vuex(全局缓存) + rue-router(路由) + axios(请求插件) + apex(图表)  + antd-ui(ui组件) + 百度地图 API
 
-员工管理（修改员工详细信息），员工薪资涨幅（员工涨幅统计），员工薪资发放记录，库房管理，盘库统计，物品出入库详情
+平台后台：springboot(框架) + redis(缓存中间件) + shiro(权限中间件) + mybatisplus(orm) + restful风格接口 + mysql(数据库)
+
+开发环境：windows10 or windows7 ， vscode or webstorm ， idea + lambok
+
+---
+
+## 核心特性
+
+- **多角色权限管理**：区分管理员与员工两类角色，实现不同权限隔离与功能访问控制，支持系统登录与密码修改。
+- **入库管理**：记录商品采购入库信息，支持查看入库详情、关联供应商与采购订单，并可导出入库单。
+- **出库管理**：记录商品销售出库与调拨出库信息，支持查看出库详情、关联销售订单，并可导出出库单。
+- **库存盘点**：支持盘库统计与库存差异比对，实时掌握库存数量，提供库存预警与损溢处理。
+- **供应商准入管理**：维护供应商档案，包括公司名称、联系人、资质证件、合作状态与供货记录，支持供应商准入审核与评级。
+- **订单管理**：管理采购订单与销售订单，覆盖订单创建、审核、执行与完成全流程，支持订单类型统计与售出统计。
+- **员工薪资管理**：维护员工详细信息，支持员工薪资涨幅统计与薪资发放记录管理，实现人力成本精细化管控。
+- **数据统计看板**：提供七天内订单统计、入库统计、出库统计、订单类型统计、售出统计等多维度数据可视化，辅助经营决策。
+---
+
+## 适用场景
+
+- 中小型超市进销存管理系统
+- 便利店日常运营管理系统
+- 社区生鲜店库存与成本管理系统
+- 连锁门店仓储与财务管理系统
+- 仓储式零售企业成本核算系统
+- 校园超市/企业内部超市管理平台
+---
+
+## 功能模块概览
+
+## 管理员端
+
+管理员负责超市整体运营、出入库管理、供应商管理、订单管理、员工薪资管理与数据统计分析：
+
+### 系统管理
+
+- **系统登录**：管理员通过账号密码登录系统，支持 JWT 身份认证与会话管理。
+- **修改密码**：管理员可修改个人登录密码，密码加密存储，保障账户安全。
+- **系统定制**：配置系统参数、数据字典、权限菜单与操作日志审计，支持数据备份与恢复。
+
+### 数据统计
+
+- **七天内订单统计**：以图表形式展示近七天订单量变化趋势，直观呈现超市交易活跃度。
+- **入库信息统计**：统计近七天商品入库数量、入库金额与入库频次，掌握采购入库动态。
+- **出库信息统计**：统计近七天商品出库数量、出库金额与出库频次，掌握销售出库动态。
+- **订单类型统计**：按采购订单、销售订单、调拨订单、退货订单等类型分类统计，分析各类型订单占比。
+- **售出统计**：按时间段统计商品售出数量、售出金额、毛利额，支持热销商品排行与品类销售占比分析。
+
+### 供应商与订单管理
+
+- **供应商准入管理**：维护供应商档案，包括公司名称、联系人、联系电话、地址、营业执照、合作状态、供货记录与评级，支持供应商准入审核与禁用。
+- **订单管理**：查看平台所有订单，包括订单编号、订单类型、关联商品、数量、金额、状态、经办人、创建时间等，支持按时间、状态筛选与异常订单处理。
+
+### 出入库管理
+
+- **出库记录**：查看商品出库详情，包括出库单号、商品名称、数量、单价、出库类型（销售/调拨/报损）、经办人、出库时间，支持导出出库单为 Excel/PDF 格式。
+- **入库记录**：查看商品入库详情，包括入库单号、商品名称、数量、单价、供应商、经办人、入库时间，支持导出入库单为 Excel/PDF 格式。
+
+### 员工与薪资管理
+
+- **员工管理**：维护员工档案，包括工号、姓名、性别、岗位、联系方式、入职时间、权限等级，支持修改员工详细信息与账号状态管理。
+- **员工薪资涨幅**：统计员工薪资历史涨幅情况，以图表形式展示薪资变化趋势，辅助薪资调整决策。
+- **员工薪资发放记录**：记录每一笔薪资发放流水，包括员工姓名、发放月份、应发工资、扣除项、实发金额、发放时间，支持财务对账。
+
+### 库房与盘库管理
+
+- **库房管理**：管理仓库/库区信息，包括仓库名称、位置、容量、负责人，支持多仓库管理。
+- **盘库统计**：执行库存盘点，比对系统库存与实际库存，生成盘盈盘亏差异报告，支持库存调整与损溢处理。
+- **物品出入库详情**：查看每件商品的完整出入库流水记录，包括入库时间、出库时间、数量变动、经办人，实现库存全流程可追溯。
+
+---
+
+## 项目结构
+
+```text
+pharmacy-dispensing-system/
+├── backend/            # 后端 API 服务
+│   ├── src/
+│   │   ├── controllers/  # 控制器
+│   │   ├── models/       # 数据模型
+│   │   ├── routes/       # 路由
+│   │   └── services/     # 业务逻辑
+│   └── package.json
+├── frontend/           # 前端 Web 应用
+│   ├── src/
+│   │   ├── views/      # 页面视图
+│   │   ├── components/ # 公共组件
+│   │   └── store/      # 状态管理
+│   └── package.json
+├── docs/               # 项目文档与 API 接口说明
+├── LICENSE
+└── README.md
+```
+---
+
 
 #### 前台启动方式
 安装所需文件 yarn install 
 运行 yarn run dev
 
-#### 后端启动方式
-
-1.首先启动redis，进入redis目录终端。输入redis-server回车
-2.导入sql文件，修改数据库与redis连接配置
-3.idea中启动后端项目
-
 #### 默认后台账户密码
 [管理员]
-system
-1234qwer
+admin
+123456
 
+[用户]
+fank
+123456
 
 #### 项目截图
-
 |  |  |
 |---------------------|---------------------|
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/b0ee63524e1473578f7f1c49e9ed534.jpg) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/3ad8a82ffa2d8bfd1293d5772b554c8.jpg) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/a6becf78bc5b5c47be476e73aab4229.jpg) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/1e9d5f6a7142421fe5c09fa03d37ab2.jpg) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/60205b77c69c7ea0d9d4cb5e18e33d1.jpg) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/eb815c82c3b6b8b50c54d6f9288aabc.jpg) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/04083fe7f139860f7b8428b7f171756.jpg) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/bd14cfb08f1f2e0cac8f03b85a100af.jpg) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/7ba91cf08f3ddd2018424719dd9dbf8.jpg) | ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/b3819f127084af2444feeb1d283c816.jpg) |
-| ![](https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/work/936e9baf53eb9a217af4f89c616dc19.png) |
+| ![](./assets/image%20(1).jpg) | ![](./assets/image%20(2).jpg) |
+| ![](./assets/image%20(3).jpg) | ![](./assets/image%20(4).jpg) |
+| ![](./assets/image%20(5).jpg) | ![](./assets/image%20(6).jpg) |
+| ![](./assets/image%20(7).jpg) | ![](./assets/image%20(8).jpg) |
+| ![](./assets/image%20(9).jpg) | ![](./assets/image%20(10).jpg) |
 
 #### 演示视频
 
@@ -93,7 +168,10 @@ WeChat: `Storm_Berserker`
 
 > 项目部署调试不好包退！功能逻辑没讲明白包退！
 
+<div align=center><img align="center" src="./assets/product_word.png" alt="fankekeke" /></div>
+
 #### 其它资源
+[2026年-答辩顺利通过-客户评价🀄](https://berserker287.github.io/2026/06/29/2026%E5%B9%B4%E7%AD%94%E8%BE%A9%E9%A1%BA%E5%88%A9%E9%80%9A%E8%BF%87/)
 
 [2025年-答辩顺利通过-客户评价🍜](https://berserker287.github.io/2025/06/18/2025%E5%B9%B4%E7%AD%94%E8%BE%A9%E9%A1%BA%E5%88%A9%E9%80%9A%E8%BF%87/)
 
@@ -111,11 +189,14 @@ WeChat: `Storm_Berserker`
 
 [计算机专业毕业答辩小tips](https://zhuanlan.zhihu.com/p/145911029)
 
-
 #### 接JAVAWEB毕设，纯原创，价格公道，诚信第一
 
 `网站建设、小程序、H5、APP、各种系统 选题+开题报告+任务书+程序定制+安装调试+项目讲解+论文+答辩PPT`
 
 More info: [悲伤的橘子树](https://berserker287.github.io/)
 
-<p><img align="center" src="https://fank-bucket-oss.oss-cn-beijing.aliyuncs.com/img/%E5%90%88%E4%BD%9C%E7%89%A9%E6%96%99%E6%A0%B7%E5%BC%8F%20(3).png" alt="fankekeke" /></p>
+<div align="center"><img align="center" src="./assets/chat_qr_code.png" alt="fankekeke" width=250 /></div>
+
+<p><img align="center" src="./assets/wechat_group.png" alt="fankekeke" /></p>
+
+**感谢查看**
